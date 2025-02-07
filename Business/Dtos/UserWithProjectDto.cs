@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Business.Models;
+﻿using Business.Models;
 
 namespace Business.Dtos;
 

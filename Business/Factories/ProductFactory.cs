@@ -6,13 +6,13 @@ namespace Business.Factories;
 
 public static class ProductFactory
 {
-    public static ProductEntity Create(CreateProductDto dto)
+    public static ProductEntity Create(ProductCreateDto dto)
     {
         return new ProductEntity
         {
             ProductName = dto.ProductName,
             Price = dto.Price,
-            Currency = dto.Currency,
+            Currency = dto.Currency
         };
     }
 
@@ -23,11 +23,11 @@ public static class ProductFactory
             ProductId = entity.ProductId,
             ProductName = entity.ProductName,
             Price = entity.Price,
-            Currency = entity.Currency,
+            Currency = entity.Currency
         };
     }
 
-    public static void Update(ProductEntity entity, UpdateProductDto dto)
+    public static void Update(ProductEntity entity, ProductUpdateDto dto)
     {
         entity.ProductName = dto.ProductName;
         entity.Price = dto.Price;

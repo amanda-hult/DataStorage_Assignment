@@ -5,7 +5,7 @@ namespace Business.Factories;
 
 public static class ContactPersonFactory
 {
-    public static ContactPersonEntity Create(CreateContactPersonDto dto)
+    public static ContactPersonEntity Create(ContactPersonCreateDto dto)
     {
         return new ContactPersonEntity
         {

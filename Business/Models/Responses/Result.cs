@@ -1,6 +1,6 @@
 ﻿using Business.Interfaces;
 
-namespace Business.Models;
+namespace Business.Models.Responses;
 
 public class Result : IResult
 {

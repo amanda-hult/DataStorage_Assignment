@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Presentation.MauiMvvm.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Presentation.MauiMvvm"
+    
+    xmlns:views="clr-namespace:Presentation.MauiMvvm.Views"
+    
+    Shell.FlyoutBehavior="Flyout"
+    Title="Presentation.MauiMvvm">
+
+
+    <ShellContent Title="All Products" ContentTemplate="{DataTemplate views:ShowProductsView}" Route="ShowProductsView" />
+    <ShellContent Title="Add Product" ContentTemplate="{DataTemplate views:AddProductView}" Route="AddProductView" />
+
+    <ShellContent Title="All Customers" ContentTemplate="{DataTemplate views:ShowCustomersView}" Route="ShowCustomersView" />
+    <ShellContent Title="Add Customer" ContentTemplate="{DataTemplate views:AddCustomerView}" Route="AddCustomerView" />
+
+    <ShellContent Title="All Users" ContentTemplate="{DataTemplate views:ShowUsersView}" Route="ShowUsersView" />
+    <ShellContent Title="Add User" ContentTemplate="{DataTemplate views:AddUserView}" Route="AddUserView" />
+    <ShellContent Title="Edit User" ContentTemplate="{DataTemplate views:EditUserView}" Route="EditUserView" />
+
+</Shell>

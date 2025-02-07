@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
+             xmlns:viewmodels="clr-namespace:Presentation.MauiMvvm.ViewModels"
+             x:DataType="{x:Type viewmodels:AddProductViewModel}"
+             
+             x:Class="Presentation.MauiMvvm.Views.AddProductView"
+             Title="AddProductView">
+    
+    <VerticalStackLayout>
+        <Label Text="Add Product" VerticalOptions="Center" HorizontalOptions="Center" />
+
+        <Label Text="Service name:" />
+        <Entry Text="{Binding ProductCreateDto.ProductName}" />
+
+        <Label Text="Price per hour:" />
+        <Entry Text="{Binding ProductCreateDto.Price}" />
+
+        <Label Text="Currency:" />
+        <Entry Text="{Binding ProductCreateDto.Currency}" />
+
+        <Button Text="Add Service" Command="{Binding AddProductCommand}" />
+
+    </VerticalStackLayout>
+</ContentPage>

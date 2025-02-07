@@ -6,7 +6,28 @@ namespace Business.Factories;
 
 public static class UserFactory
 {
-    public static UserWithProjectDto Create(UserEntity entity)
+    public static UserEntity Create(UserCreateDto dto)
+    {
+        return new UserEntity
+        {
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            Email = dto.Email
+        };
+    }
+
+    public static UserModel Create(UserEntity entity)
+    {
+        return new UserModel
+        {
+            UserId = entity.UserId,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            Email = entity.Email,
+        };
+    }
+
+    public static UserWithProjectDto ShowWithProjectDetails(UserEntity entity)
     {
         return new UserWithProjectDto
         {
@@ -24,13 +45,11 @@ public static class UserFactory
         };
     }
 
-    public static UserEntity Create(CreateUserDto dto)
+    public static void Update(UserEntity entity, UserUpdateDto dto)
     {
-        return new UserEntity
-        {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            Email = dto.Email
-        };
+        entity.UserId = dto.UserId;
+        entity.FirstName = dto.FirstName;
+        entity.LastName = dto.LastName;
+        entity.Email = dto.Email;
     }
 }

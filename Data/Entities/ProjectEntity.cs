@@ -14,7 +14,7 @@ public class ProjectEntity
     [Column(TypeName = "nvarchar(50)")]
     public string Title { get; set; } = null!;
 
-    [Column(TypeName = "nvarchar(max)")]
+    [Column(TypeName = "TEXT")]
     public string? Description { get; set; }
 
     [Required]

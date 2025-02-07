@@ -2,7 +2,7 @@
 
 namespace Business.Dtos;
 
-public class CreateUserDto
+public class UserCreateDto
 {
     [Required(ErrorMessage = "First name is required.")]
     [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters.")]

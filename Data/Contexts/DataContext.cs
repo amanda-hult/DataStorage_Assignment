@@ -21,19 +21,43 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ProjectProductEntity>()
-            .HasKey(ps => new { ps.ProjectId, ps.ProductId });
+            .HasKey(pp => new { pp.ProjectId, pp.ProductId });
 
         modelBuilder.Entity<ProjectProductEntity>()
-            .HasOne(ps => ps.Project)
+            .HasOne(pp => pp.Project)
             .WithMany(p => p.ProjectProducts)
-            .HasForeignKey(ps => ps.ProjectId)
+            .HasForeignKey(pp => pp.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Restricting delete behavior if Service is connected
+        // Restricting delete behavior
         modelBuilder.Entity<ProjectProductEntity>()
-            .HasOne(ps => ps.Product)
+            .HasOne(pp => pp.Product)
             .WithMany(s => s.ProjectProducts)
-            .HasForeignKey(ps => ps.ProductId)
+            .HasForeignKey(pp => pp.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<CustomerEntity>()
+            .HasOne(c => c.ContactPerson)
+            .WithMany(cp => cp.Customers)
+            .HasForeignKey(c => c.ContactPersonId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProjectEntity>()
+            .HasOne(p => p.Customer)
+            .WithMany(c => c.Projects)
+            .HasForeignKey(p => p.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProjectEntity>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.Projects)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProjectEntity>()
+            .HasOne(p => p.Status)
+            .WithMany(s => s.Projects)
+            .HasForeignKey(p => p.StatusId)
             .OnDelete(DeleteBehavior.Restrict);
 
 

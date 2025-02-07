@@ -1,16 +1,18 @@
 ﻿using Business.Dtos;
 using Business.Factories;
+using Business.Interfaces;
 using Business.Models;
+using Business.Models.Responses;
 using Data.Interfaces;
 
 namespace Business.Services;
 
-public class ProductService(IProductRepository productRepository)
+public class ProductService(IProductRepository productRepository) : IProductService
 {
-    IProductRepository _productRepository = productRepository;
+    private readonly IProductRepository _productRepository = productRepository;
 
     // CREATE
-    public async Task<ResultT<ProductModel>> CreateProductAsync(CreateProductDto dto)
+    public async Task<ResultT<ProductModel>> CreateProductAsync(ProductCreateDto dto)
     {
         //check if product already exists
         var exists = await _productRepository.AlreadyExistsAsync(p => p.ProductName == dto.ProductName && p.Currency == dto.Currency);
@@ -55,7 +57,7 @@ public class ProductService(IProductRepository productRepository)
 
 
     // UPDATE
-    public async Task<ResultT<ProductModel>> UpdateProductAsync(int id, UpdateProductDto updateDto)
+    public async Task<ResultT<ProductModel>> UpdateProductAsync(int id, ProductUpdateDto updateDto)
     {
         // get product entity
         var productEntity = await _productRepository.GetAsync(p => p.ProductId == id);
@@ -81,7 +83,6 @@ public class ProductService(IProductRepository productRepository)
 
         //delete product
         var result = await _productRepository.DeleteAsync(p => p.ProductId == id);
-
         return result ? Result.NoContent() : Result.Error("Unable to delete product.");
     }
 }

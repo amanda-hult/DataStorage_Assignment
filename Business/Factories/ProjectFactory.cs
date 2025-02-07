@@ -72,7 +72,7 @@ public static class ProjectFactory
         };
     }
 
-    public static ProjectEntity Create(CreateProjectDto project, UserEntity user, CustomerEntity customer, StatusEntity status)
+    public static ProjectEntity Create(ProjectCreateDto project, UserEntity user, CustomerEntity customer, StatusEntity status)
     {
         return new ProjectEntity
         {

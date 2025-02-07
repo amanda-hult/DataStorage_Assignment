@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
+             xmlns:models="clr-namespace:Business.Models;assembly=Business"
+             xmlns:viewmodels="clr-namespace:Presentation.MauiMvvm.ViewModels"
+             x:DataType="{x:Type viewmodels:ShowProductsViewModel}"
+             
+             x:Class="Presentation.MauiMvvm.Views.ShowProductsView"
+             x:Name="Page"
+             Title="ShowProductsView">
+    
+    <VerticalStackLayout>
+
+        <Button Text="Show services" Command="{Binding LoadAllProductsCommand}">
+            
+        </Button>
+        <Button Text="Add service" Command="{Binding NavigateToAddProductCommand}">
+
+        </Button>
+
+
+        <CollectionView ItemsSource="{Binding ProductList}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ProductModel">
+
+
+
+                        <Grid>
+
+                        <HorizontalStackLayout>
+                            <Label Text="{Binding ProductName}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct, Mode=TwoWay}" Value="{Binding .}">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Entry Text="{Binding ProductName, Mode=TwoWay}" IsVisible="False">
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct, Mode=TwoWay}" Value="{Binding .}">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+
+                            <Label Text="{Binding Price}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Entry Text="{Binding Price, Mode=TwoWay}" IsVisible="False" Keyboard="Numeric">
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+
+                            <Label Text="{Binding Currency}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Entry Text="{Binding Currency, Mode=TwoWay}" IsVisible="False">
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+
+
+                            <Button Text="Edit" Command="{Binding Source={x:Reference Page}, Path=BindingContext.ToggleIsEditingCommand}" CommandParameter="{Binding .}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
+                                        <Setter Property="Text" Value="Save" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                                
+                                <Button Text="Delete" x:Name="DeleteButton" />
+                        </HorizontalStackLayout>
+                    </Grid>
+
+
+
+
+
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

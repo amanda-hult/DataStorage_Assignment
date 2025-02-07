@@ -15,9 +15,10 @@ public class CustomerEntity
     public string CustomerName { get; set; } = null!;
 
 
-    public int ContactPersonId { get; set; }
+    public int? ContactPersonId { get; set; }
+
     [ForeignKey("ContactPersonId")]
-    public ContactPersonEntity ContactPerson { get; set; } = null!;
+    public ContactPersonEntity? ContactPerson { get; set; }
 
     public ICollection<ProjectEntity> Projects { get; set; } = new List<ProjectEntity>();
 }
