@@ -43,6 +43,27 @@ public partial class ShowCustomersViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task DeleteCustomer(CustomerModel customer)
+    {
+        if (customer == null)
+        {
+            StatusMessage = "Invalid customer.";
+            return;
+        }
+        var result = await _customerService.DeleteCustomerAsync(customer.CustomerId);
+
+        if (result.Success)
+        {
+            CustomerList.Remove(customer);
+            StatusMessage = "Customer deleted successfully.";
+        }
+        else
+        {
+            StatusMessage = "Failed to delete customer.";
+        }
+    }
+
+    [RelayCommand]
     private async Task NavigateToEditCustomer(CustomerModel customer)
     {
         var parameters = new ShellNavigationQueryParameters

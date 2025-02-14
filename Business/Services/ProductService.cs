@@ -1,9 +1,12 @@
-﻿using Business.Dtos;
+﻿using System.Collections.Generic;
+using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Business.Models.Responses;
+using Data.Entities;
 using Data.Interfaces;
+using Data.Repositories;
 
 namespace Business.Services;
 
@@ -45,9 +48,19 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         return ResultT<IEnumerable<ProductModel>>.Ok(products);
     }
 
-    public async Task<ResultT<ProductModel>> GetProductAsync(string name)
+    public async Task<ResultT<List<ProductEntity>>> GetProductEntitiesByIdAsync(List<int> ids)
     {
-        var productEntity = await _productRepository.GetAsync(p => p.ProductName == name);
+        var products = await _productRepository.GetProductsByIdAsync(ids);
+
+        if (products == null)
+            return ResultT<List<ProductEntity>>.NotFound("Products not found.");
+
+        return ResultT<List<ProductEntity>>.Ok(products);
+    }
+
+    public async Task<ResultT<ProductModel>> GetProductByIdAsync(int id)
+    {
+        var productEntity = await _productRepository.GetAsync(u => u.ProductId == id);
 
         if (productEntity == null)
             return ResultT<ProductModel>.NotFound("Product not found.");
@@ -55,19 +68,18 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         return ResultT<ProductModel>.Ok(ProductFactory.Create(productEntity));
     }
 
-
     // UPDATE
-    public async Task<ResultT<ProductModel>> UpdateProductAsync(int id, ProductUpdateDto updateDto)
+    public async Task<ResultT<ProductModel>> UpdateProductAsync(ProductUpdateDto dto)
     {
         // get product entity
-        var productEntity = await _productRepository.GetAsync(p => p.ProductId == id);
+        var productEntity = await _productRepository.GetAsync(p => p.ProductId == dto.ProductId);
 
         if (productEntity == null)
             return ResultT<ProductModel>.NotFound("Product not found.");
 
         //update product entity
-        ProductFactory.Update(productEntity, updateDto);
-        var updatedProduct = await _productRepository.UpdateAsync(p => p.ProductId == id, productEntity);
+        ProductFactory.Update(productEntity, dto);
+        var updatedProduct = await _productRepository.UpdateAsync(p => p.ProductId == dto.ProductId, productEntity);
 
         return ResultT<ProductModel>.Ok(ProductFactory.Create(updatedProduct));
     }

@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Business.Models;
+﻿using Business.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Business.Dtos;
 
-public class ProjectCreateDto
+public class ProjectUpdateDto
 {
+    [Required]
+    public int ProjectId { get; set; }
+
     [Required(ErrorMessage = "Project name is required.")]
     [StringLength(50, ErrorMessage = "Product name cannot exceed 50 characters.")]
     public string Title { get; set; } = null!;
@@ -20,24 +23,21 @@ public class ProjectCreateDto
     [Required(ErrorMessage = "Status is required.")]
     public int StatusId { get; set; }
 
+
     [Required(ErrorMessage = "Project manager is required.")]
     public int UserId { get; set; }
-
-    [Required(ErrorMessage = "User information is required.")]
-    public UserModel User { get; set; } = null!;
+    public UserModel? User { get; set; }
 
 
     [Required(ErrorMessage = "Customer is required.")]
     public int CustomerId { get; set; }
-
-    [Required(ErrorMessage = "Customer information is required.")]
-    public CustomerModel Customer { get; set; } = null!;
+    public CustomerModel? Customer { get; set; }
 
 
     public int ContactPersonId { get; set; }
-    public ContactPersonCreateDto ContactPerson { get; set; } = new ContactPersonCreateDto();
+    public ContactPersonCreateDto ContactPerson { get; set; } = new();
 
 
-    [Required(ErrorMessage ="At least one service must be selected.")]
+    [Required(ErrorMessage = "At least one service must be selected.")]
     public List<ProjectProductDto> ProjectProducts { get; set; } = new();
 }

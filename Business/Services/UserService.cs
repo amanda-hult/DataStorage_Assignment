@@ -4,6 +4,7 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Business.Models.Responses;
+using Data.Entities;
 using Data.Interfaces;
 using Data.Repositories;
 
@@ -53,6 +54,16 @@ public class UserService(IUserRepository userRepository) : IUserService
             return ResultT<UserModel>.NotFound("User not found.");
 
         return ResultT<UserModel>.Ok(UserFactory.Create(userEntity));
+    }
+
+    public async Task<ResultT<UserEntity>> GetUserEntityByEmailAsync(string email)
+    {
+        var userEntity = await _userRepository.GetAsync(u => u.Email == email);
+
+        if (userEntity == null)
+            return ResultT<UserEntity>.NotFound("User not found.");
+
+        return ResultT<UserEntity>.Ok(userEntity);
     }
 
 

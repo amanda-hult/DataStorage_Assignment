@@ -12,10 +12,36 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
     protected readonly DataContext _context = context;
     protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
-    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    private IDbContextTransaction _transaction = null!;
+
+    #region Transaction Management
+    public virtual async Task BeginTransactionAsync()
     {
-        return await _context.Database.BeginTransactionAsync();
+        _transaction ??= await _context.Database.BeginTransactionAsync();
     }
+
+    public virtual async Task CommitTransactionAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null!;
+        }
+    }
+
+    public virtual async Task RollBackTransactionAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null!;
+        }
+    }
+    #endregion
+
+
     // CREATE
     public virtual async Task<TEntity> CreateAsync(TEntity entity)
     {

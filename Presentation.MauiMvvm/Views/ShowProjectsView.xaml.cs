@@ -2,10 +2,10 @@ using Presentation.MauiMvvm.ViewModels;
 
 namespace Presentation.MauiMvvm.Views;
 
-public partial class ShowUsersView : ContentPage
+public partial class ShowProjectsView : ContentPage
 {
-	private readonly ShowUsersViewModel _viewModel;
-	public ShowUsersView(ShowUsersViewModel viewModel)
+	private readonly ShowProjectsViewModel _viewModel;
+	public ShowProjectsView(ShowProjectsViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = _viewModel = viewModel;
@@ -14,6 +14,6 @@ public partial class ShowUsersView : ContentPage
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
-		await _viewModel.LoadAllUsersCommand.ExecuteAsync(null);
+		await _viewModel.LoadAllProjectsCommand.ExecuteAsync(null);
 	}
 }

@@ -7,97 +7,48 @@
              x:DataType="{x:Type viewmodels:ShowProductsViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.ShowProductsView"
+             Shell.NavBarIsVisible="False"
              x:Name="Page"
              Title="ShowProductsView">
-    
-    <VerticalStackLayout>
 
-        <Button Text="Show services" Command="{Binding LoadAllProductsCommand}">
-            
-        </Button>
-        <Button Text="Add service" Command="{Binding NavigateToAddProductCommand}">
+    <ScrollView>
+        <Grid RowDefinitions="auto, *" Padding="10" BackgroundColor="White">
 
-        </Button>
+            <Label Text="All Services" FontSize="28" FontAttributes="Bold" />
 
+            <VerticalStackLayout>
+                <Grid ColumnDefinitions="0.5*, 2*, 1*, 1*, 1*" Padding="10,5" ColumnSpacing="20" BackgroundColor="LightGray">
+                    <Label Text="Id" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black"/>
+                    <Label Text="Service" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="1" />
+                    <Label Text="Price/hour" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="2"/>
+                    <Label Text="Currency" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="3" />
+                    <Label Text="Actions" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="4" />
+                </Grid>
+                <CollectionView ItemsSource="{Binding ProductList}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ProductModel">
+                            <Border BackgroundColor="WhiteSmoke"
+                                    Stroke="LightGray"
+                                    StrokeThickness="0.5"
+                                    StrokeShape="RoundRectangle 3"
+                                    Padding="1"
+                                    Margin="2, 1">
+                                <Grid ColumnDefinitions="0.5*, 2*, 1*, 1*, 1*" Padding="5">
+                                    <Label Text="{Binding ProductId}" Grid.Column="0" TextColor="Black" VerticalOptions="Center" />
+                                    <Label Text="{Binding ProductName}" Grid.Column="1" TextColor="Black" VerticalOptions="Center"/>
+                                    <Label Text="{Binding Price}" Grid.Column="2" TextColor="Black" VerticalOptions="Center" />
+                                    <Label Text="{Binding Currency}" Grid.Column="3" TextColor="Black" VerticalOptions="Center" />
 
-        <CollectionView ItemsSource="{Binding ProductList}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:ProductModel">
-
-
-
-                        <Grid>
-
-                        <HorizontalStackLayout>
-                            <Label Text="{Binding ProductName}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct, Mode=TwoWay}" Value="{Binding .}">
-                                        <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-
-                            <Entry Text="{Binding ProductName, Mode=TwoWay}" IsVisible="False">
-                                <Entry.Triggers>
-                                    <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct, Mode=TwoWay}" Value="{Binding .}">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Entry.Triggers>
-                            </Entry>
-
-                            <Label Text="{Binding Price}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
-                                        <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-
-                            <Entry Text="{Binding Price, Mode=TwoWay}" IsVisible="False" Keyboard="Numeric">
-                                <Entry.Triggers>
-                                    <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Entry.Triggers>
-                            </Entry>
-
-                            <Label Text="{Binding Currency}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
-                                        <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                            <Entry Text="{Binding Currency, Mode=TwoWay}" IsVisible="False">
-                                <Entry.Triggers>
-                                    <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Entry.Triggers>
-                            </Entry>
-
-
-                            <Button Text="Edit" Command="{Binding Source={x:Reference Page}, Path=BindingContext.ToggleIsEditingCommand}" CommandParameter="{Binding .}">
-                                <Button.Triggers>
-                                    <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference Page}, Path=BindingContext.EditingProduct}" Value="{Binding .}">
-                                        <Setter Property="Text" Value="Save" />
-                                    </DataTrigger>
-                                </Button.Triggers>
-                            </Button>
-                                
-                                <Button Text="Delete" x:Name="DeleteButton" />
-                        </HorizontalStackLayout>
-                    </Grid>
-
-
-
-
-
-
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            
-        </CollectionView>
-
-    </VerticalStackLayout>
+                                    <HorizontalStackLayout Grid.Column="4">
+                                        <Button Text="Edit" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditProductCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProductsViewModel}}}" />
+                                        <Button Text="Delete" CommandParameter="{Binding .}" Command="{Binding Path=DeleteProductCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProductsViewModel}}}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

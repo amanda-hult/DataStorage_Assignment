@@ -1,11 +1,15 @@
 ﻿using Business.Dtos;
 using Business.Factories;
+using Business.Interfaces;
+using Business.Models;
 using Business.Models.Responses;
+using Data.Entities;
 using Data.Interfaces;
+using Data.Repositories;
 
 namespace Business.Services;
 
-public class StatusService(IStatusRepository statusRepository)
+public class StatusService(IStatusRepository statusRepository) : IStatusService
 {
     private readonly IStatusRepository _statusRepository = statusRepository;
 
@@ -18,5 +22,15 @@ public class StatusService(IStatusRepository statusRepository)
             return ResultT<IEnumerable<StatusDto>>.NotFound("No statuses found.");
 
         return ResultT<IEnumerable<StatusDto>>.Ok(statuses);
+    }
+
+    public async Task<ResultT<StatusEntity>> GetStatusEntityByIdAsync(int id)
+    {
+        var statusEntity = await _statusRepository.GetAsync(s => s.StatusId == id);
+
+        if (statusEntity == null)
+            return ResultT<StatusEntity>.NotFound("Status not found.");
+
+        return ResultT<StatusEntity>.Ok(statusEntity);
     }
 }

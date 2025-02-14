@@ -13,4 +13,13 @@ public static class StatusFactory
             StatusName = entity.StatusName,
         };
     }
+
+    //public static StatusEntity Create(StatusDto dto)
+    //{
+    //    return new StatusEntity
+    //    {
+    //        StatusId = dto.StatusId,
+    //        StatusName = dto.StatusName,
+    //    };
+    //}
 }

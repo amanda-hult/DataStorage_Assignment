@@ -25,24 +25,47 @@ namespace Presentation.MauiMvvm
                 });
 
 
+            builder.Services.AddSingleton<IProjectService, ProjectService>();
+            builder.Services.AddSingleton<IProjectRepository, ProjectRepository>();
+
             builder.Services.AddSingleton<IProductService, ProductService>();
             builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+
             builder.Services.AddSingleton<IUserService, UserService>();
             builder.Services.AddSingleton<IUserRepository, UserRepository>();
+
             builder.Services.AddSingleton<ICustomerService, CustomerService>();
             builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
 
+            builder.Services.AddSingleton<IStatusService, StatusService>();
+            builder.Services.AddSingleton<IStatusRepository, StatusRepository>();
+
+            builder.Services.AddSingleton<IContactPersonService, ContactPersonService>();
+            builder.Services.AddSingleton<IContactPersonRepository, ContactPersonRepository>();
+
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlite("Data Source=C:\\Databases\\projectdata.db"));
+
+            builder.Services.AddTransient<AddProjectViewModel>();
+            builder.Services.AddTransient<AddProjectView>();
+            builder.Services.AddTransient<ShowProjectsViewModel>();
+            builder.Services.AddTransient<ShowProjectsView>();
+            builder.Services.AddTransient<EditProjectViewModel>();
+            builder.Services.AddTransient<EditProjectView>();
+
 
             builder.Services.AddTransient<AddProductViewModel>();
             builder.Services.AddTransient<AddProductView>();
             builder.Services.AddTransient<ShowProductsViewModel>();
             builder.Services.AddTransient<ShowProductsView>();
+            builder.Services.AddTransient<EditProductViewModel>();
+            builder.Services.AddTransient<EditProductView>();
 
             builder.Services.AddTransient<AddCustomerViewModel>();
             builder.Services.AddTransient<AddCustomerView>();
             builder.Services.AddTransient<ShowCustomersViewModel>();
             builder.Services.AddTransient<ShowCustomersView>();
+            builder.Services.AddTransient<EditCustomerViewModel>();
+            builder.Services.AddTransient<EditCustomerView>();
 
             builder.Services.AddTransient<AddUserViewModel>();
             builder.Services.AddTransient<AddUserView>();

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
+             xmlns:models="clr-namespace:Business.Models;assembly=Business"
+             xmlns:viewmodels="clr-namespace:Presentation.MauiMvvm.ViewModels"
+             x:DataType="{x:Type viewmodels:AddProjectViewModel}"
+             
+             x:Class="Presentation.MauiMvvm.Views.AddProjectView"
+             Shell.NavBarIsVisible="False"
+             Title="AddProjectView">
+
+    <ScrollView>
+        <Grid BackgroundColor="LightBlue">
+            <VerticalStackLayout Margin="20">
+                <Label Text="New Project" FontSize="28" FontAttributes="Bold" />
+
+                <Border Stroke="LightGray"
+                        StrokeThickness="1"
+                        Padding="20"
+                        BackgroundColor="WhiteSmoke">
+
+                    <VerticalStackLayout>
+                        <Label Text="Project title: " TextColor="Black"/>
+                        <Entry Text="{Binding ProjectCreateDto.Title}" TextColor="DarkGray"/>
+
+                        <Label Text="Project description (optional): " TextColor="Black" />
+                        <Entry Text="{Binding ProjectCreateDto.Description}" TextColor="DarkGray" />
+
+                        <Label Text="Start date: " TextColor="Black" />
+                        <Entry Text="{Binding ProjectCreateDto.StartDate}" TextColor="DarkGray" />
+
+                        <Label Text="End date: " TextColor="Black" />
+                        <Entry Text="{Binding ProjectCreateDto.EndDate}" TextColor="DarkGray" />
+
+
+
+                        <Label Text="Status: " TextColor="Black" />
+                        <Picker ItemsSource="{Binding AvailableStatuses}"
+                                ItemDisplayBinding="{Binding StatusName}"
+                                SelectedItem="{Binding SelectedStatus}"
+                                TextColor="DarkGray"/>
+
+
+
+
+
+                        <Label Text="Project Manager: " TextColor="Black" />
+                        <Picker ItemsSource="{Binding AvailableUsers}"
+                                ItemDisplayBinding="{Binding Email}"
+                                SelectedItem="{Binding SelectedUser}"
+                                TextColor="DarkGray"/>
+
+
+
+
+                        <Label Text="Customer: " TextColor="Black" />
+                        <Picker ItemsSource="{Binding AvailableCustomers}"
+                                ItemDisplayBinding="{Binding CustomerName}"
+                                SelectedItem="{Binding SelectedCustomer}"
+                                TextColor="DarkGray"/>
+
+
+
+
+
+                        <Label Text="Contact person" FontSize="20" FontAttributes="Bold" TextColor="Black"/>
+
+                        <Label Text="First name" TextColor="Black"/>
+                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.FirstName}" TextColor="DarkGray" />
+
+                        <Label Text="Last name" TextColor="Black"/>
+                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.LastName}" TextColor="DarkGray" />
+
+                        <Label Text="Email address" TextColor="Black"/>
+                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.Email}" TextColor="DarkGray" />
+
+                        <Label Text="Phone number" TextColor="Black"/>
+                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.Phone}" TextColor="DarkGray" />
+
+
+
+
+                        <Label Text="Service: " TextColor="Black" />
+                        <Picker ItemsSource="{Binding AvailableProducts}"
+                                ItemDisplayBinding="{Binding ProductName}"
+                                SelectedItem="{Binding SelectedProduct}"
+                                TextColor="DarkGray"/>
+
+                        <Label Text="Hours: " TextColor="Black" />
+                        <Entry Text="{Binding Hours}" TextColor="DarkGray" />
+
+                        <Button Text="Add service" TextColor="Black" Command="{Binding AddProductToProjectCommand}" />
+
+                        <Label Text="Selected services:" TextColor="Black" />
+                        <CollectionView ItemsSource="{Binding SelectedProjectProducts}" >
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Label Text="{Binding Product.ProductId}"  TextColor="DarkGray"/>
+                                        <Label Text="{Binding Product.ProductName}"  TextColor="DarkGray"/>
+                                        <Label Text="{Binding Hours}"  TextColor="DarkGray"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Button Text="Create Projects" Command="{Binding AddProjectCommand}" />
+                        <Label Text="{Binding StatusMessage}" />
+                    </VerticalStackLayout>
+
+
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+
+    </ScrollView>
+</ContentPage>

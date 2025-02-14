@@ -11,11 +11,17 @@
     Title="Presentation.MauiMvvm">
 
 
+    <ShellContent Title="Add Project" ContentTemplate="{DataTemplate views:AddProjectView}" Route="AddProjectView" />
+    <ShellContent Title="Show Projects" ContentTemplate="{DataTemplate views:ShowProjectsView}" Route="ShowProjectsView" />
+    <ShellContent Title="Edit Project" ContentTemplate="{DataTemplate views:EditProjectView}" Route="EditProjectView" />
+
     <ShellContent Title="All Products" ContentTemplate="{DataTemplate views:ShowProductsView}" Route="ShowProductsView" />
     <ShellContent Title="Add Product" ContentTemplate="{DataTemplate views:AddProductView}" Route="AddProductView" />
+    <ShellContent Title="Edit Product" ContentTemplate="{DataTemplate views:EditProductView}" Route="EditProductView" />
 
     <ShellContent Title="All Customers" ContentTemplate="{DataTemplate views:ShowCustomersView}" Route="ShowCustomersView" />
     <ShellContent Title="Add Customer" ContentTemplate="{DataTemplate views:AddCustomerView}" Route="AddCustomerView" />
+    <ShellContent Title="Edit Customer" ContentTemplate="{DataTemplate views:EditCustomerView}" Route="EditCustomerView" />
 
     <ShellContent Title="All Users" ContentTemplate="{DataTemplate views:ShowUsersView}" Route="ShowUsersView" />
     <ShellContent Title="Add User" ContentTemplate="{DataTemplate views:AddUserView}" Route="AddUserView" />

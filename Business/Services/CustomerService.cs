@@ -3,6 +3,7 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Business.Models.Responses;
+using Data.Entities;
 using Data.Interfaces;
 
 namespace Business.Services;
@@ -19,7 +20,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         if (exists)
             return ResultT<CustomerModel>.Conflict("A customer with the same name already exists.");
 
-        //create new product
+        //create new customer
         var createdEntity = await _customerRepository.CreateAsync(CustomerFactory.Create(dto));
 
         if (createdEntity != null)
@@ -44,15 +45,40 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         return ResultT<IEnumerable<CustomerModel>>.Ok(customers);
     }
 
-    public Task<ResultT<CustomerModel>> GetCustomerAsync(string name)
+    public async Task<ResultT<CustomerModel>> GetCustomerByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var customerEntity = await _customerRepository.GetAsync(u => u.CustomerId == id);
+
+        if (customerEntity == null)
+            return ResultT<CustomerModel>.NotFound("Customer not found.");
+
+        return ResultT<CustomerModel>.Ok(CustomerFactory.Create(customerEntity));
+    }
+
+    public async Task<ResultT<CustomerEntity>> GetCustomerEntityByNameAsync(string name)
+    {
+        var customerEntity = await _customerRepository.GetAsync(u => u.CustomerName == name);
+
+        if (customerEntity == null)
+            return ResultT<CustomerEntity>.NotFound("Customer not found.");
+
+        return ResultT<CustomerEntity>.Ok(customerEntity);
     }
 
     // UPDATE
-    public Task<ResultT<CustomerModel>> UpdateCustomerAsync(int id, CustomerUpdateDto updateDto)
+    public async Task<ResultT<CustomerModel>> UpdateCustomerAsync(CustomerUpdateDto dto)
     {
-        throw new NotImplementedException();
+        // get user entity
+        var customerEntity = await _customerRepository.GetAsync(c => c.CustomerId == dto.CustomerId);
+
+        if (customerEntity == null)
+            return ResultT<CustomerModel>.NotFound("Customer not found.");
+
+        // update user entity
+        CustomerFactory.Update(customerEntity, dto);
+        var updatedCustomer = await _customerRepository.UpdateAsync(c => c.CustomerId == dto.CustomerId, customerEntity);
+
+        return ResultT<CustomerModel>.Ok(CustomerFactory.Create(updatedCustomer));
     }
 
     // DELETE

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
+             xmlns:models="clr-namespace:Business.Models;assembly=Business"
+             xmlns:viewmodels="clr-namespace:Presentation.MauiMvvm.ViewModels"
+             x:DataType="{x:Type viewmodels:EditProjectViewModel}"
+             
+             x:Class="Presentation.MauiMvvm.Views.EditProjectView"
+             Shell.NavBarIsVisible="False"
+             Title="EditProjectView">
+
+    <ScrollView>
+
+
+        <Border BackgroundColor="#f4f4f4"
+                Stroke="LightGray"
+                StrokeThickness="1"
+                Padding="15"
+                Margin="20">
+
+            <Grid ColumnDefinitions="2*, 2*, 2*, 2*" RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, *, *" Padding="15">
+                <Label Text="Edit Project" FontSize="28" FontAttributes="Bold" Grid.ColumnSpan="2" TextColor="Black"/>
+
+                <Label Text="Project Id: " Grid.Row="1" Grid.Column="0" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.ProjectId}" Grid.Row="2" Grid.Column="0" TextColor="Black"/>
+
+                <Label Text="Title: " Grid.Column="0" Grid.Row="3" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.Title}" Grid.Column="0" Grid.Row="4" TextColor="Black"/>
+
+                <Label Text="Description: " Grid.Column="0" Grid.Row="5" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.Description}" Grid.Column="0" Grid.Row="6" TextColor="Black"/>
+
+
+
+                <Label Text="Start date: " Grid.Row="1" Grid.Column="1" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.StartDate}" Grid.Column="1" Grid.Row="2" TextColor="Black"/>
+
+                <Label Text="End date: " Grid.Row="1" Grid.Column="2" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.EndDate}" Grid.Column="2" Grid.Row="2" TextColor="Black"/>
+
+                <Label Text="Status: " Grid.Row="1" Grid.Column="3" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.Status.StatusName}" Grid.Column="3" Grid.Row="2" TextColor="Black"/>
+
+
+
+                <Label Text="Customer: " Grid.Row="7" Grid.Column="0" FontAttributes="Bold" TextColor="Black"/>
+                <Label Text="{Binding DetailedProjectModel.Customer.CustomerName}" Grid.Row="8" Grid.Column="0" TextColor="Black" />
+
+                <Border BackgroundColor="#f3f3f3"
+                    Stroke="LightGray"
+                    StrokeThickness="0.5"
+                    Padding="5"
+                    Grid.Row="9"
+                    Grid.Column="2">
+                    <VerticalStackLayout>
+                        <Label Text="Contact person: " FontAttributes="Bold" TextColor="Black"/>
+                        <Label Text="{Binding DetailedProjectModel.ContactPerson.FirstName}" TextColor="Black" />
+                        <Label Text="{Binding DetailedProjectModel.ContactPerson.LastName}" TextColor="Black" />
+                        <Label Text="{Binding DetailedProjectModel.ContactPerson.Email}" TextColor="Black"/>
+                        <Label Text="{Binding DetailedProjectModel.ContactPerson.Phone}" TextColor="Black" />
+                    </VerticalStackLayout>
+                </Border>
+
+
+                <Border BackgroundColor="#f3f3f3"
+                    Stroke="LightGray"
+                    StrokeThickness="0.5"
+                    Padding="5"
+                    Grid.Row="10"
+                    Grid.ColumnSpan="2">
+                    <VerticalStackLayout>
+                        <Label Text="Project manager: " FontAttributes="Bold" TextColor="Black"/>
+                        <Label Text="{Binding DetailedProjectModel.User.FirstName}" TextColor="Black" />
+                        <Label Text="{Binding DetailedProjectModel.User.LastName}" TextColor="Black" />
+                        <Label Text="{Binding DetailedProjectModel.User.Email}" TextColor="Black" />
+                    </VerticalStackLayout>
+                </Border>
+
+
+                <Border BackgroundColor="#f3f3f3"
+                    Stroke="LightGray"
+                    StrokeThickness="0.5"
+                    Padding="5"
+                    Grid.Row="7"
+                    Grid.Column="1">
+                    <VerticalStackLayout>
+                        <Label Text="Project services: " FontAttributes="Bold" TextColor="Black"/>
+
+                        <CollectionView ItemsSource="{Binding DetailedProjectModel.ProjectProducts}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid RowDefinitions="2*, 2*, 1*, 1*" Padding="5">
+                                        <Label Text="{Binding Product.ProductName}" Grid.Column="0" Grid.Row="0" TextColor="Black" />
+                                        <Label Text="{Binding Hours}" Grid.Column="0" Grid.Row="1" TextColor="Black"/>
+                                        <Label Text="{Binding Product.Price}" Grid.Column="0" Grid.Row="2" TextColor="Black"/>
+                                        <Label Text="{Binding Product.Currency}" Grid.Column="0" Grid.Row="3" TextColor="Black"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+
+                </Border>
+            </Grid>
+        </Border>
+
+    </ScrollView>
+</ContentPage>

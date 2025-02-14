@@ -1,10 +1,16 @@
-﻿namespace Business.Models;
+﻿using Business.Dtos;
+
+namespace Business.Models;
 
 public class BasicProjectModel
 {
+    public int ProjectId { get; set; }
     public string Title { get; set; } = null!;
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public string? CustomerName { get; set; }
-    public string StatusName { get; set; } = null!;
+    public CustomerModel Customer { get; set; } = null!;
+    public StatusDto Status { get; set; } = null!;
+
+    //public string? CustomerName { get; set; }
+    //public string StatusName { get; set; } = null!;
 }

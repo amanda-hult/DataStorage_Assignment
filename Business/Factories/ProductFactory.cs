@@ -29,6 +29,7 @@ public static class ProductFactory
 
     public static void Update(ProductEntity entity, ProductUpdateDto dto)
     {
+        entity.ProductId = dto.ProductId;
         entity.ProductName = dto.ProductName;
         entity.Price = dto.Price;
         entity.Currency = dto.Currency;

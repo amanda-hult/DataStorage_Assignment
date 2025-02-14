@@ -6,19 +6,42 @@ namespace Business.Factories;
 
 public static class ProjectFactory
 {
-    public static BasicProjectModel Show(ProjectEntity entity)
+    //public static BasicProjectModel Show(ProjectEntity entity)
+    //{
+    //    return new BasicProjectModel
+    //    {
+    //        Title = entity.Title,
+    //        StartDate = entity.StartDate,
+    //        EndDate = entity.EndDate,
+    //        Customer = entity.Customer.CustomerName,
+    //        Status = entity.Status.StatusName
+    //    };
+    //}
+
+    public static BasicProjectModel CreateBasicProjectModel(ProjectEntity entity)
     {
         return new BasicProjectModel
         {
+            ProjectId = entity.ProjectId,
             Title = entity.Title,
             StartDate = entity.StartDate,
             EndDate = entity.EndDate,
-            CustomerName = entity.Customer.CustomerName,
-            StatusName = entity.Status.StatusName
+
+            Status = new StatusDto
+            {
+                StatusId = entity.Status.StatusId,
+                StatusName = entity.Status.StatusName,
+            },
+
+            Customer = new CustomerModel
+            {
+                CustomerId = entity.Customer.CustomerId,
+                CustomerName = entity.Customer.CustomerName,
+            }
         };
     }
 
-    public static DetailedProjectModel Create(ProjectEntity entity)
+    public static DetailedProjectModel CreateDetailedProjectModel(ProjectEntity entity)
     {
         return new DetailedProjectModel
         {
@@ -72,7 +95,7 @@ public static class ProjectFactory
         };
     }
 
-    public static ProjectEntity Create(ProjectCreateDto project, UserEntity user, CustomerEntity customer, StatusEntity status)
+    public static ProjectEntity Create(ProjectCreateDto project, UserEntity user, CustomerEntity customer, StatusEntity status, List<ProductEntity> products)
     {
         return new ProjectEntity
         {
@@ -90,6 +113,7 @@ public static class ProjectFactory
             {
                 ProductId = pp.ProductId,
                 Hours = pp.Hours,
+                Product = products.FirstOrDefault(p => p.ProductId == pp.ProductId)
             }).ToList()
         };
     }

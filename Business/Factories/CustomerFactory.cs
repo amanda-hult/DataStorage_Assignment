@@ -24,6 +24,15 @@ public static class CustomerFactory
         };
     }
 
+    //public static CustomerEntity Create(CustomerModel model)
+    //{
+    //    return new CustomerEntity
+    //    {
+    //        CustomerId = model.CustomerId,
+    //        CustomerName = model.CustomerName,
+    //    };
+    //}
+
 
     //public static CustomerWithProjectDto Create(CustomerEntity entity)
     //{
@@ -42,13 +51,15 @@ public static class CustomerFactory
     //}
 
 
-    public static CustomerEntity Create(CustomerCreateDto dto, ContactPersonEntity contactPerson)
+    public static void Connect(CustomerEntity customer, ContactPersonEntity contactPerson)
     {
-        return new CustomerEntity
-        {
-            CustomerName = dto.CustomerName,
-            ContactPersonId = contactPerson.ContactPersonId,
-            ContactPerson = contactPerson
-        };
+        customer.ContactPersonId = contactPerson.ContactPersonId;
+        customer.ContactPerson = contactPerson;
+    }
+
+    public static void Update(CustomerEntity entity, CustomerUpdateDto dto)
+    {
+        entity.CustomerId = dto.CustomerId;
+        entity.CustomerName = dto.CustomerName;
     }
 }

@@ -7,27 +7,48 @@
              x:DataType="{x:Type viewmodels:ShowUsersViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.ShowUsersView"
+             Shell.NavBarIsVisible="False"
              Title="ShowUsersView">
-    
-    <VerticalStackLayout>
-        <Button Text="Show users" Command="{Binding LoadAllUsersCommand}"></Button>
-        
-        <CollectionView ItemsSource="{Binding UserList}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:UserModel">
-                    <Grid>
-                        <HorizontalStackLayout>
-                            <Label Text="{Binding UserId}" />
-                            <Label Text="{Binding FirstName}" />
-                            <Label Text="{Binding LastName}" />
-                            <Label Text="{Binding Email}" />
-                            <Button Text="Edit" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditUserCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowUsersViewModel}}}" />
-                        </HorizontalStackLayout>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
 
+    <ScrollView>
+        <Grid RowDefinitions="auto, *" Padding="10" BackgroundColor="White">
 
-    </VerticalStackLayout>
+            <Label Text="All Users" FontSize="28" FontAttributes="Bold" />
+
+            <VerticalStackLayout>
+                <Grid ColumnDefinitions="0.5*, 2*, 2*, 3*, 1*" Padding="10,5" ColumnSpacing="15" BackgroundColor="LightGrey">
+                    <Label Text="Id" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="0" HorizontalOptions="Start"/>
+                    <Label Text="First name" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="1" HorizontalOptions="Start"/>
+                    <Label Text="Last name" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="2" HorizontalOptions="Start"/>
+                    <Label Text="Email" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="3" HorizontalOptions="Start"/>
+                    <Label Text="Actions" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="4" HorizontalOptions="End"/>
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding UserList}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:UserModel">
+                            <Border BackgroundColor="WhiteSmoke"
+                                    Stroke="LightGray"
+                                    StrokeThickness="0.5"
+                                    StrokeShape="RoundRectangle 3"
+                                    Padding="1"
+                                    Margin="2, 1">
+                                <Grid ColumnDefinitions="0.5*, 2*, 2*, 3*, 1*" Padding="10, 5" ColumnSpacing="15">
+                                    <Label Text="{Binding UserId}" Grid.Column="0" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding FirstName}" Grid.Column="1" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding LastName}" Grid.Column="2" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding Email}" Grid.Column="3" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+
+                                    <HorizontalStackLayout Grid.Column="4" Spacing="5" HorizontalOptions="End">
+                                        <Button Text="Edit" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditUserCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowUsersViewModel}}}" />
+                                        <Button Text="Delete" CommandParameter="{Binding .}" Command="{Binding Path=DeleteUserCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowUsersViewModel}}}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

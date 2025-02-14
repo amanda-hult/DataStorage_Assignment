@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Business.Interfaces;
 using Business.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -14,19 +13,15 @@ public partial class ShowProductsViewModel : ObservableObject
     public ShowProductsViewModel(IProductService productService)
     {
         _productService = productService;
+        ProductList = new ObservableCollection<ProductModel>();
     }
 
     [ObservableProperty]
     private string _statusMessage = null!;
 
     [ObservableProperty]
-    private ObservableCollection<ProductModel> _productList = new();
+    private ObservableCollection<ProductModel> _productList;
 
-    //[ObservableProperty]
-    //private ProductModel? editingProduct;
-
-    [ObservableProperty]
-    private Dictionary<ProductModel, bool> _editingProducts = new();
 
     [RelayCommand]
     private async Task LoadAllProducts()
@@ -35,39 +30,52 @@ public partial class ShowProductsViewModel : ObservableObject
 
         if (result.Success && result.Data != null)
         {
-            _productList = new ObservableCollection<ProductModel>(result.Data);
-
+            ProductList.Clear();
+            foreach (var product in result.Data)
+            {
+                ProductList.Add(product);
+            }
         }
         else
         {
-            _statusMessage = "Couldn't load services.";
+            StatusMessage = "Couldn't load services.";
         }
+    }
+
+    [RelayCommand]
+    private async Task DeleteProduct(ProductModel product)
+    {
+        if (product == null)
+        {
+            StatusMessage = "Invalid product.";
+            return;
+        }
+        var result = await _productService.DeleteProductAsync(product.ProductId);
+
+        if (result.Success)
+        {
+            ProductList.Remove(product);
+            StatusMessage = "Product deleted successfully.";
+        }
+        else
+        {
+            StatusMessage = "Failed to delete product.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task NavigateToEditProduct(ProductModel product)
+    {
+        var parameters = new ShellNavigationQueryParameters
+        {
+            { "ProductId", product.ProductId.ToString() }
+        };
+        await Shell.Current.GoToAsync("EditProductView", parameters);
     }
 
     [RelayCommand]
     private async Task NavigateToAddProduct()
     {
         await Shell.Current.GoToAsync("AddProductView");
-    }
-
-    [RelayCommand]
-    private void ToggleIsEditing(ProductModel product)
-    {
-        if (_editingProducts.ContainsKey(product))
-        {
-            _editingProducts[product] = !_editingProducts[product];
-        }
-        else
-        {
-            _editingProducts[product] = true;
-        }
-        //IsEditing = !IsEditing;
-        //if (EditingProduct == product)
-        //    SetProperty(ref editingProduct, null);
-        //else
-        //    SetProperty(ref editingProduct, product);
-
-        //Debug.Write($"EditingProduct: {EditingProduct?.ProductName}");
-
     }
 }

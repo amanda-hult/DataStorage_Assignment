@@ -7,23 +7,44 @@
              x:DataType="{x:Type viewmodels:ShowCustomersViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.ShowCustomersView"
+             Shell.NavBarIsVisible="False"
              Title="ShowCustomersView">
-    <VerticalStackLayout>
+    <ScrollView>
+        <Grid RowDefinitions="auto, *" Padding="10" BackgroundColor="White">
 
-        <Button Text="Show customers" Command="{Binding LoadCustomersCommand}"></Button>
+            <Label Text="All Customers" FontSize="28" FontAttributes="Bold"/>
 
-        <CollectionView ItemsSource="{Binding CustomerList}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:CustomerModel">
-                    <Grid>
-                        <HorizontalStackLayout>
-                            <Label Text="{Binding CustomerId}" />
-                            <Label Text="{Binding CustomerName}" />
+            <VerticalStackLayout>
 
-                        </HorizontalStackLayout>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </VerticalStackLayout>
+                <Grid ColumnDefinitions="50, *" Padding="10, 5" BackgroundColor="LightGray">
+                    <Label Text="Id" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black"/>
+                    <Label Text="Customer name" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="1" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding CustomerList}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:CustomerModel">
+                            <Border BackgroundColor="WhiteSmoke"
+                                        Stroke="LightGray"
+                                        StrokeThickness="0.5"
+                                        StrokeShape="RoundRectangle 3"
+                                        Padding="1"
+                                        Margin="2, 1">
+                                <Grid ColumnDefinitions="50, *, auto, auto" Padding="5">
+                                    <Label Text="{Binding CustomerId}" Grid.Column="0" TextColor="Black" VerticalOptions="Center"/>
+                                    <Label Text="{Binding CustomerName}" Grid.Column="1" TextColor="Black" VerticalOptions="Center" />
+
+
+                                    <HorizontalStackLayout Grid.Column="2" Spacing="5">
+                                        <Button Text="Edit" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditCustomerCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowCustomersViewModel}}}" />
+                                        <Button Text="Delete" CommandParameter="{Binding .}" Command="{Binding Path=DeleteCustomerCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowCustomersViewModel}}}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

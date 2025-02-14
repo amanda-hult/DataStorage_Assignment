@@ -7,19 +7,26 @@
              x:DataType="{x:Type viewmodels:EditUserViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.EditUserView"
+             Shell.NavBarIsVisible="False"
              Title="EditUserView">
 
 
-    <VerticalStackLayout>
-        <Label Text="First name: " />
-        <Entry Placeholder="New first name" Text="{Binding UserUpdateDto.FirstName, Mode=TwoWay}" />
+    <ScrollView>
+        <Grid BackgroundColor="White">
+            <Label Text="Edit User" FontSize="28" FontAttributes="Bold" />
 
-        <Label Text="Last name: " />
-        <Entry Placeholder="New last name" Text="{Binding UserUpdateDto.LastName, Mode=TwoWay}" />
+            <VerticalStackLayout>
+                <Label Text="First name: " />
+                <Entry Placeholder="New first name" Text="{Binding UserUpdateDto.FirstName, Mode=TwoWay}" />
 
-        <Label Text="Email address: " />
-        <Entry Placeholder="New email address" Text="{Binding UserUpdateDto.Email, Mode=TwoWay}" />
+                <Label Text="Last name: " />
+                <Entry Placeholder="New last name" Text="{Binding UserUpdateDto.LastName, Mode=TwoWay}" />
 
-        <Button Text="Save" CommandParameter="{Binding UserUpdateDto}" Command="{Binding Path=UpdateUserCommand}" />
-    </VerticalStackLayout>
+                <Label Text="Email address: " />
+                <Entry Placeholder="New email address" Text="{Binding UserUpdateDto.Email, Mode=TwoWay}" />
+
+                <Button Text="Save" CommandParameter="{Binding UserUpdateDto}" Command="{Binding Path=UpdateUserCommand}" />
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

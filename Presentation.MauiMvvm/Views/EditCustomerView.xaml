@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
+             xmlns:models="clr-namespace:Business.Models;assembly=Business"
+             xmlns:viewmodels="clr-namespace:Presentation.MauiMvvm.ViewModels"
+             x:DataType="{x:Type viewmodels:EditCustomerViewModel}"
+             
+             x:Class="Presentation.MauiMvvm.Views.EditCustomerView"
+             Shell.NavBarIsVisible="False"
+             Title="EditCustomerView">
+
+    <ScrollView>
+        <Grid BackgroundColor="White" RowDefinitions="*, auto">
+            <Label Text="Edit Customer" FontSize="28" FontAttributes="Bold" TextColor="Black" Grid.Row="0"/>
+
+            <VerticalStackLayout BackgroundColor="LightGray" Grid.Row="1">
+                <Label Text="Customer name: " />
+                <Entry Placeholder="New customer name" Text="{Binding CustomerUpdateDto.CustomerName, Mode=TwoWay}" />
+
+                <Button Text="Save" CommandParameter="{Binding CustomerUpdateDto}" Command="{Binding Path=UpdateCustomerCommand}" />
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

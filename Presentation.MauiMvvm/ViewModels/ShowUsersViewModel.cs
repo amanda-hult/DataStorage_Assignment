@@ -44,6 +44,27 @@ public partial class ShowUsersViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task DeleteUser(UserModel user)
+    {
+        if (user == null)
+        {
+            StatusMessage = "Invalid user.";
+            return;
+        }
+        var result = await _userService.DeleteUserAsync(user.UserId);
+
+        if (result.Success)
+        {
+            UserList.Remove(user);
+            StatusMessage = "User deleted successfully.";
+        }
+        else
+        {
+            StatusMessage = "Failed to delete user.";
+        }
+    }
+
+    [RelayCommand]
     private async Task NavigateToEditUser(UserModel user)
     {
         var parameters = new ShellNavigationQueryParameters
