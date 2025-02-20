@@ -22,26 +22,27 @@ namespace Presentation.MauiMvvm
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("FontAwesome6Free-Solid-900.otf", "FontAwesomeSolid");
                 });
 
 
-            builder.Services.AddSingleton<IProjectService, ProjectService>();
-            builder.Services.AddSingleton<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
-            builder.Services.AddSingleton<IProductService, ProductService>();
-            builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-            builder.Services.AddSingleton<IUserService, UserService>();
-            builder.Services.AddSingleton<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-            builder.Services.AddSingleton<ICustomerService, CustomerService>();
-            builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
-            builder.Services.AddSingleton<IStatusService, StatusService>();
-            builder.Services.AddSingleton<IStatusRepository, StatusRepository>();
+            builder.Services.AddScoped<IStatusService, StatusService>();
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
-            builder.Services.AddSingleton<IContactPersonService, ContactPersonService>();
-            builder.Services.AddSingleton<IContactPersonRepository, ContactPersonRepository>();
+            builder.Services.AddScoped<IContactPersonService, ContactPersonService>();
+            builder.Services.AddScoped<IContactPersonRepository, ContactPersonRepository>();
 
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlite("Data Source=C:\\Databases\\projectdata.db"));
 

@@ -10,6 +10,7 @@ public interface IUserService
     Task<ResultT<UserModel>> CreateUserAsync(UserCreateDto dto);
     Task<ResultT<IEnumerable<UserModel>>> GetAllUsersAsync();
     Task<ResultT<UserModel>> GetUserByIdAsync(int id);
+    Task<ResultT<UserEntity>> GetUserEntityByIdAsync(int id);
     Task<ResultT<UserEntity>> GetUserEntityByEmailAsync(string email);
     Task<ResultT<UserModel>> UpdateUserAsync(UserUpdateDto dto);
     Task<Result> DeleteUserAsync(int id);

@@ -6,21 +6,42 @@
              x:DataType="{x:Type viewmodels:AddUserViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.AddUserView"
+             Shell.NavBarIsVisible="False"
              Title="AddUserView">
-    
-    <VerticalStackLayout>
-        <Label Text="Add User" VerticalOptions="Center" HorizontalOptions="Center" />
 
-        <Label Text="First name:" />
-        <Entry Text="{Binding UserCreateDto.FirstName}" />
+    <ScrollView>
+        <Grid RowDefinitions="auto, *" Padding="15" BackgroundColor="White">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Add User" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f"/>
 
-        <Label Text="Last name:" />
-        <Entry Text="{Binding UserCreateDto.LastName}" />
+                <Border Stroke="LightGray"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 5"
+                        Padding="20"
+                        BackgroundColor="#f4f4f4">
+                    <VerticalStackLayout>
+                        <Label Text="First name: *" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding UserCreateDto.FirstName}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-        <Label Text="Email:" />
-        <Entry Text="{Binding UserCreateDto.Email}" />
+                        <Label Text="Last name: *" TextColor="Black" Padding="0, 10, 0, 0"/>
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding UserCreateDto.LastName}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-        <Button Text="Add User" Command="{Binding AddUserCommand}" />
+                        <Label Text="Email: *" TextColor="Black" Padding="0, 10, 0, 0"/>
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding UserCreateDto.Email}" Placeholder="user@domain.com" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-    </VerticalStackLayout>
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold" />
+                        
+                        <Button Text="Add User" Command="{Binding AddUserCommand}" BackgroundColor="#cecece" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+
 </ContentPage>

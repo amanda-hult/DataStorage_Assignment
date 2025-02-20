@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Business.Interfaces;
 using Business.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -21,11 +20,28 @@ public partial class ShowUsersViewModel : ObservableObject
     private string _statusMessage = string.Empty;
 
     [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
+
+    [ObservableProperty]
     private ObservableCollection<UserModel> _userList;
+
+    [ObservableProperty]
+    private bool _isSortedAscendingByUserId = true;
+
+    [ObservableProperty]
+    private bool _isSortedAscendingByFirstName = false;
+
+    [ObservableProperty]
+    private bool _isSortedAscendingByLastName = false;
+
+    [ObservableProperty]
+    private bool _isSortedAscendingByEmail = false;
 
     [RelayCommand]
     private async Task LoadAllUsers()
     {
+        StatusMessage = string.Empty;
+
         var result = await _userService.GetAllUsersAsync();
 
         if (result.Success && result.Data != null)
@@ -35,7 +51,6 @@ public partial class ShowUsersViewModel : ObservableObject
             {
                 UserList.Add(user);
             }
-            //_userList = new ObservableCollection<UserModel>(result.Data);
         }
         else
         {
@@ -49,19 +64,108 @@ public partial class ShowUsersViewModel : ObservableObject
         if (user == null)
         {
             StatusMessage = "Invalid user.";
+            StatusMessageColor = Colors.Firebrick;
             return;
         }
-        var result = await _userService.DeleteUserAsync(user.UserId);
 
-        if (result.Success)
+        bool confirm = await Shell.Current.DisplayAlert("Confirmation", "Please confirm deletion", "Confirm", "Cancel");
+        if (confirm)
         {
-            UserList.Remove(user);
-            StatusMessage = "User deleted successfully.";
+            var result = await _userService.DeleteUserAsync(user.UserId);
+
+            if (result.Success)
+            {
+                UserList.Remove(user);
+                StatusMessage = "User deleted successfully.";
+                StatusMessageColor = Colors.Black;
+            }
+            else
+            {
+                StatusMessage = "User exists in a project and cannot be deleted.";
+                StatusMessageColor = Colors.Firebrick;
+            }
+        }
+
+    }
+
+    [RelayCommand]
+    private void SortUserListByUserId()
+    {
+        if (UserList == null)
+            return;
+
+        if (IsSortedAscendingByUserId)
+        {
+            var sortedList = UserList.OrderByDescending(u => u.UserId).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
         }
         else
         {
-            StatusMessage = "Failed to delete user.";
+            var sortedList = UserList.OrderBy(u => u.UserId).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
         }
+
+        IsSortedAscendingByUserId = !IsSortedAscendingByUserId;
+    }
+
+    [RelayCommand]
+    private void SortUserListByFirstName()
+    {
+        if (UserList == null)
+            return;
+
+        if (IsSortedAscendingByFirstName)
+        {
+            var sortedList = UserList.OrderByDescending(u => u.FirstName).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
+        }
+        else
+        {
+            var sortedList = UserList.OrderBy(u => u.FirstName).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
+        }
+
+        IsSortedAscendingByFirstName = !IsSortedAscendingByFirstName;
+    }
+
+    [RelayCommand]
+    private void SortUserListByLastName()
+    {
+        if (UserList == null)
+            return;
+
+        if (IsSortedAscendingByLastName)
+        {
+            var sortedList = UserList.OrderByDescending(u => u.LastName).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
+        }
+        else
+        {
+            var sortedList = UserList.OrderBy(u => u.LastName).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
+        }
+
+        IsSortedAscendingByLastName = !IsSortedAscendingByLastName;
+    }
+
+    [RelayCommand]
+    private void SortUserListByEmail()
+    {
+        if (UserList == null)
+            return;
+
+        if (IsSortedAscendingByEmail)
+        {
+            var sortedList = UserList.OrderByDescending(u => u.Email).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
+        }
+        else
+        {
+            var sortedList = UserList.OrderBy(u => u.Email).ToList();
+            UserList = new ObservableCollection<UserModel>(sortedList);
+        }
+
+        IsSortedAscendingByEmail = !IsSortedAscendingByEmail;
     }
 
     [RelayCommand]

@@ -46,18 +46,17 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
     public virtual async Task<TEntity> CreateAsync(TEntity entity)
     {
         if (entity == null)
-            return null!;
+            throw new ArgumentNullException(nameof(entity));
 
         try
         {
             await _dbSet.AddAsync(entity);
-            await context.SaveChangesAsync();
             return entity;
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error creating {nameof(TEntity)} entity: {ex.Message}");
-            return null!;
+            throw;
         }
     }
 
@@ -95,7 +94,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
                 return null!;
 
             _context.Entry(existingEntity).CurrentValues.SetValues(updatedEntity);
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return existingEntity;
 
         }
@@ -136,6 +135,11 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
             Debug.WriteLine($"Error checking existence: {ex.Message}");
             throw;
         }
+    }
+
+    public virtual async Task<int> SaveAsync()
+    {
+        return await _context.SaveChangesAsync();
     }
 }
 

@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿using System.Diagnostics;
 using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
@@ -10,9 +10,10 @@ using Data.Repositories;
 
 namespace Business.Services;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository, IProjectRepository projectRepository) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IProjectRepository _projectRepository = projectRepository;
 
     // CREATE
     public async Task<ResultT<UserModel>> CreateUserAsync(UserCreateDto dto)
@@ -22,15 +23,24 @@ public class UserService(IUserRepository userRepository) : IUserService
         if (exists)
             return ResultT<UserModel>.Conflict("A user with the same email already exists.");
 
-        // create new user
-        var createdEntity = await _userRepository.CreateAsync(UserFactory.Create(dto));
+        await _userRepository.BeginTransactionAsync();
 
-        if (createdEntity != null)
+        // create new user
+        try
         {
+            var createdEntity = await _userRepository.CreateAsync(UserFactory.Create(dto));
+
+            if (createdEntity == null)
+                throw new Exception("Failed to create user entity.");
+
+            await _userRepository.SaveAsync();
+            await _userRepository.CommitTransactionAsync();
             return ResultT<UserModel>.Created(UserFactory.Create(createdEntity));
         }
-        else
+        catch (Exception ex)
         {
+            await _userRepository.RollBackTransactionAsync();
+            Debug.WriteLine($"Error creating user: {ex.Message}");
             return ResultT<UserModel>.Error("An error occured while creating the user.");
         }
     }
@@ -54,6 +64,16 @@ public class UserService(IUserRepository userRepository) : IUserService
             return ResultT<UserModel>.NotFound("User not found.");
 
         return ResultT<UserModel>.Ok(UserFactory.Create(userEntity));
+    }
+
+    public async Task<ResultT<UserEntity>> GetUserEntityByIdAsync(int id)
+    {
+        var userEntity = await _userRepository.GetAsync(u => u.UserId == id);
+
+        if (userEntity == null)
+            return ResultT<UserEntity>.NotFound("User not found.");
+
+        return ResultT<UserEntity>.Ok(userEntity);
     }
 
     public async Task<ResultT<UserEntity>> GetUserEntityByEmailAsync(string email)
@@ -86,13 +106,18 @@ public class UserService(IUserRepository userRepository) : IUserService
     // DELETE
     public async Task<Result> DeleteUserAsync(int id)
     {
-        //// get user entity
-        //var userEntity = await _userRepository.GetAsync(u => u.UserId == id);
+        // get user entity
+        var userEntity = await _userRepository.GetAsync(u => u.UserId == id);
 
-        //if (userEntity == null)
-        //    return Result.NotFound("User not found.");
+        if (userEntity == null)
+            return Result.NotFound("User not found.");
 
-        //// delete user
+        // check if user exists in any project
+        bool exists = await _projectRepository.AlreadyExistsAsync(u => u.UserId == id);
+        if (exists)
+            return Result.Error("User exists in a project and cannot be deleted.");
+
+        // delete user
         var result = await _userRepository.DeleteAsync(u => u.UserId == id);
         return result ? Result.NoContent() : Result.Error("Unable to delete user.");
     }

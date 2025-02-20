@@ -4,6 +4,7 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Business.Models.Responses;
+using Data.Entities;
 using Data.Interfaces;
 using Data.Repositories;
 
@@ -31,7 +32,7 @@ public class ProjectService : IProjectService
     // CREATE
     public async Task<ResultT<DetailedProjectModel>> CreateProjectAsync(ProjectCreateDto dto)
     {
-        //using var transaction = await _projectRepository.BeginTransactionAsync();
+        await _projectRepository.BeginTransactionAsync();
 
         try
         {
@@ -67,12 +68,15 @@ public class ProjectService : IProjectService
 
 
             var contactPersonEntity = await _contactPersonService.GetContactPersonEntityByEmailAsync(dto.ContactPerson.Email);
-            if (contactPersonEntity == null || contactPersonEntity.Data == null)
+            if (contactPersonEntity.Data == null)
             {
                 var result = await _contactPersonService.CreateContactPersonAsync(dto.ContactPerson);
                 if (result.Success)
                     contactPersonEntity = await _contactPersonService.GetContactPersonEntityByEmailAsync(dto.ContactPerson.Email);
             }
+
+            if (contactPersonEntity.Data == null)
+                return ResultT<DetailedProjectModel>.NotFound("Failed to create or retrieve contact person.");
 
             // connect contact person to customer
             CustomerFactory.Connect(customerEntity.Data, contactPersonEntity.Data);
@@ -105,7 +109,8 @@ public class ProjectService : IProjectService
 
             //create and connect projectProduct with hours per product
 
-            //await transaction.CommitAsync();
+            //await _projectRepository.SaveAsync();
+            await _projectRepository.CommitTransactionAsync();
 
             //save changes
 
@@ -123,22 +128,22 @@ public class ProjectService : IProjectService
         }
         catch (Exception ex)
         {
-            //await transaction.RollbackAsync();
+            await _projectRepository.RollBackTransactionAsync();
             return ResultT<DetailedProjectModel>.Error($"An error occured creating the project: {ex.Message}");
         }
 
     }
 
     // READ
-    public async Task<ResultT<List<DetailedProjectModel>>> GetAllProjectsWithDetailsAsync()
-    {
-        var projects = (await _projectRepository.GetAllProjectsWithDetailsAsync()).Select(ProjectFactory.CreateDetailedProjectModel).ToList();
+    //public async Task<ResultT<List<DetailedProjectModel>>> GetAllProjectsWithDetailsAsync()
+    //{
+    //    var projects = (await _projectRepository.GetAllProjectsWithDetailsAsync()).Select(ProjectFactory.CreateDetailedProjectModel).ToList();
 
-        if (projects.Count == 0)
-            return ResultT<List<DetailedProjectModel>>.NotFound("No projects found.");
+    //    if (projects.Count == 0)
+    //        return ResultT<List<DetailedProjectModel>>.NotFound("No projects found.");
 
-        return ResultT<List<DetailedProjectModel>>.Ok(projects);
-    }
+    //    return ResultT<List<DetailedProjectModel>>.Ok(projects);
+    //}
 
     public async Task<ResultT<List<BasicProjectModel>>> GetAllProjectsAsync()
     {
@@ -163,6 +168,131 @@ public class ProjectService : IProjectService
     }
 
     // UPDATE
+    public async Task<ResultT<DetailedProjectModel>> UpdateProjectAsync(ProjectUpdateDto dto)
+    {
+        await _projectRepository.BeginTransactionAsync();
+
+        try
+        {
+            // get project entity with details
+            var projectEntity = await _projectRepository.GetProjectWithDetailsAsync(dto.ProjectId);
+            if (projectEntity == null)
+            {
+                return ResultT<DetailedProjectModel>.NotFound("Project not found.");
+            }
+
+            //get user
+            var userEntity = await _userService.GetUserEntityByIdAsync(dto.UserId);
+            if (userEntity.Data == null)
+            {
+                return ResultT<DetailedProjectModel>.NotFound("User not found.");
+            }
+
+            //get status
+            var statusEntity = await _statusService.GetStatusEntityByIdAsync(dto.StatusId);
+            if (statusEntity.Data == null)
+            {
+                return ResultT<DetailedProjectModel>.NotFound("Status not found.");
+            }
+
+            //get customer and create contactperson
+            var customerEntity = await _customerService.GetCustomerEntityByIdAsync(dto.CustomerId);
+            if (customerEntity.Data == null)
+            {
+                return ResultT<DetailedProjectModel>.NotFound("Customer not found.");
+            }
+
+
+            projectEntity.UserId = userEntity.Data.UserId;
+            projectEntity.CustomerId = customerEntity.Data.CustomerId;
+            projectEntity.StatusId = statusEntity.Data.StatusId;
+
+
+            // check if new contactperson email is unique
+            var existingContactPerson = await _contactPersonService.GetContactPersonEntityByIdAsync(dto.ContactPersonId);
+            if (existingContactPerson.Data == null)
+            {
+                return ResultT<DetailedProjectModel>.NotFound("ContactPerson not found.");
+            }
+
+            if (!string.Equals(existingContactPerson.Data.Email, dto.ContactPerson.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                var emailExists = await _contactPersonService.GetContactPersonEntityByEmailAsync(dto.ContactPerson.Email);
+                if (emailExists.Data != null && emailExists.Data.ContactPersonId != dto.ContactPersonId)
+                {
+                    return ResultT<DetailedProjectModel>.Conflict("Email is already used by another contact person.");
+                }
+            }
+
+            // connect contact person to customer
+            CustomerFactory.Connect(customerEntity.Data, existingContactPerson.Data);
+
+            // remove deleted products
+            var existingProjectProducts = projectEntity.ProjectProducts.ToList();
+            var updatedProductIds = dto.ProjectProducts.Select(pp => pp.ProductId).ToList();
+
+            var productsToRemove = existingProjectProducts
+                .Where(pp => !updatedProductIds.Contains(pp.ProductId))
+                .ToList();
+
+            foreach (var product in productsToRemove)
+            {
+                projectEntity.ProjectProducts.Remove(product);
+            }
+
+            // add new products
+            foreach (var product in dto.ProjectProducts)
+            {
+                var existingProduct = existingProjectProducts.FirstOrDefault(pp => pp.ProductId == product.ProductId);
+                if (existingProduct == null)
+                {
+                    projectEntity.ProjectProducts.Add(new Data.Entities.ProjectProductEntity
+                    {
+                        ProductId = product.ProductId,
+                        ProjectId = dto.ProjectId,
+                        Hours = product.Hours,
+                    });
+                }
+                else
+                {
+                    existingProduct.Hours = product.Hours;
+                }
+            }
+
+            // update project entity
+            ProjectFactory.Update(projectEntity, dto);
+
+            Debug.WriteLine($"Before sending to repository: UserID: {projectEntity.User.UserId}, Name: {projectEntity.User.FirstName}");
+
+            var updatedProject = await _projectRepository.UpdateProjectAsync(p => p.ProjectId == dto.ProjectId, projectEntity);
+
+
+            //await _projectRepository.SaveAsync();
+            await _projectRepository.CommitTransactionAsync();
+
+            return ResultT<DetailedProjectModel>.Ok(ProjectFactory.CreateDetailedProjectModel(updatedProject));
+        }
+        catch (Exception ex)
+        {
+            await _projectRepository.RollBackTransactionAsync();
+            return ResultT<DetailedProjectModel>.Error($"An error occured updating the project: {ex.Message}");
+        }
+    }
+
+
 
     // DELETE
+
+    // EXISTS
+    //public async Task<bool> ProjectExists(int id)
+    //{
+    //    bool exists = await _projectRepository.AlreadyExistsAsync(p => p.CustomerId == id);
+
+    //    if (exists)
+    //    {
+    //        return true;
+    //    }
+
+    //    return false;
+    //}
 }

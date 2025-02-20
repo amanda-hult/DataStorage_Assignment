@@ -12,17 +12,32 @@
              Title="ShowProductsView">
 
     <ScrollView>
-        <Grid RowDefinitions="auto, *" Padding="10" BackgroundColor="White">
-
-            <Label Text="All Services" FontSize="28" FontAttributes="Bold" />
-
+        <Grid RowDefinitions="auto, *" Padding="15" BackgroundColor="White">
             <VerticalStackLayout>
-                <Grid ColumnDefinitions="0.5*, 2*, 1*, 1*, 1*" Padding="10,5" ColumnSpacing="20" BackgroundColor="LightGray">
-                    <Label Text="Id" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black"/>
-                    <Label Text="Service" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="1" />
-                    <Label Text="Price/hour" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="2"/>
-                    <Label Text="Currency" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="3" />
-                    <Label Text="Actions" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="4" />
+                <Label Text="All Services" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f" Padding="10"/>
+                
+                <Grid ColumnDefinitions="0.5*, 2*, 1*, 2*, 1*" Padding="10,5" ColumnSpacing="15" BackgroundColor="LightGray">
+                    <Grid Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Id" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center"/>
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProductListByProductIdCommand}" />
+                    </Grid>
+
+                    <Grid Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Service" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center"/>
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProductListByProductNameCommand}" />
+                    </Grid>
+
+                    <Grid Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Price/Hour" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center"/>
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProductListByPriceCommand}" />
+                    </Grid>
+
+                    <Grid Grid.Column="3" VerticalOptions="Center" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Currency" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center"/>
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProductListByCurrencyCommand}" />
+                    </Grid>
+
+                    <Label Grid.Column="4" Text="Actions" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" HorizontalOptions="End" />
                 </Grid>
                 <CollectionView ItemsSource="{Binding ProductList}">
                     <CollectionView.ItemTemplate>
@@ -33,21 +48,24 @@
                                     StrokeShape="RoundRectangle 3"
                                     Padding="1"
                                     Margin="2, 1">
-                                <Grid ColumnDefinitions="0.5*, 2*, 1*, 1*, 1*" Padding="5">
-                                    <Label Text="{Binding ProductId}" Grid.Column="0" TextColor="Black" VerticalOptions="Center" />
-                                    <Label Text="{Binding ProductName}" Grid.Column="1" TextColor="Black" VerticalOptions="Center"/>
-                                    <Label Text="{Binding Price}" Grid.Column="2" TextColor="Black" VerticalOptions="Center" />
-                                    <Label Text="{Binding Currency}" Grid.Column="3" TextColor="Black" VerticalOptions="Center" />
+                                <Grid ColumnDefinitions="0.5*, 2*, 1*, 2*, 1*" Padding="10, 5" ColumnSpacing="15">
+                                    <Label Text="{Binding ProductId}" Grid.Column="0" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" />
+                                    <Label Text="{Binding ProductName}" Grid.Column="1" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding Price}" Grid.Column="2" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding Currency}" Grid.Column="3" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
 
-                                    <HorizontalStackLayout Grid.Column="4">
-                                        <Button Text="Edit" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditProductCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProductsViewModel}}}" />
-                                        <Button Text="Delete" CommandParameter="{Binding .}" Command="{Binding Path=DeleteProductCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProductsViewModel}}}" />
+                                    <HorizontalStackLayout Grid.Column="4" HorizontalOptions="End">
+                                        <Button Text="&#xF044;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditProductCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProductsViewModel}}}" />
+                                        <Button Text="&#xF1F8;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" CommandParameter="{Binding .}" Command="{Binding Path=DeleteProductCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProductsViewModel}}}" />
                                     </HorizontalStackLayout>
                                 </Grid>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
+                <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold" />
+                
             </VerticalStackLayout>
         </Grid>
     </ScrollView>

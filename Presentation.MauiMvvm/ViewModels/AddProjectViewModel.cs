@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using Business.Dtos;
 using Business.Interfaces;
@@ -36,7 +37,11 @@ public partial class AddProjectViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private ProjectCreateDto _projectCreateDto = new ProjectCreateDto();
+    private ProjectCreateDto _projectCreateDto = new ProjectCreateDto
+    {
+        StartDate = DateTime.Today,
+        EndDate = DateTime.Today.AddDays(1),
+    };
 
     [ObservableProperty]
     private ObservableCollection<ProductModel> _availableProducts = new();
@@ -75,6 +80,9 @@ public partial class AddProjectViewModel : ObservableObject
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
+
+    [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
 
     partial void OnSelectedStatusChanged(StatusDto value)
     {
@@ -183,6 +191,7 @@ public partial class AddProjectViewModel : ObservableObject
         if (SelectedProduct == null || Hours <= 0)
         {
             StatusMessage = "Select a service and enter hours.";
+            StatusMessageColor = Colors.Firebrick;
             return;
         }
 
@@ -190,6 +199,7 @@ public partial class AddProjectViewModel : ObservableObject
         if (existingProduct != null)
         {
             StatusMessage = "Service already added.";
+            StatusMessageColor = Colors.Firebrick;
             return;
         }
 
@@ -208,9 +218,37 @@ public partial class AddProjectViewModel : ObservableObject
     [RelayCommand]
     public async Task AddProject()
     {
-        if (_selectedStatus == null)
+        if (ProjectCreateDto == null)
+        {
+            StatusMessage = "Invalid data.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+
+        if (SelectedStatus == null)
         {
             StatusMessage = "Please select a status.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+
+        var validationContext = new ValidationContext(ProjectCreateDto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(ProjectCreateDto, validationContext, validationResults, true);
+
+        if (ProjectCreateDto.ContactPerson != null)
+        {
+            var contactValidationContext = new ValidationContext(ProjectCreateDto.ContactPerson);
+            bool isContactValid = Validator.TryValidateObject(ProjectCreateDto.ContactPerson, contactValidationContext, validationResults, true);
+
+            isValid = isValid && isContactValid;
+        }
+
+
+        if (!isValid)
+        {
+            StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
+            StatusMessageColor = Colors.Firebrick;
             return;
         }
 
@@ -219,10 +257,12 @@ public partial class AddProjectViewModel : ObservableObject
         if (result.Success)
         {
             StatusMessage = $"{result.Message}";
+            StatusMessageColor = Colors.Black;
         }
         else
         {
             StatusMessage = "Failed to creat project.";
+            StatusMessageColor = Colors.Firebrick;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Business.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
+using Business.Dtos;
 using Business.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,20 +19,42 @@ public partial class AddUserViewModel : ObservableObject
     private UserCreateDto _userCreateDto = new();
 
     [ObservableProperty]
-    private string _statusMessage = null!;
+    private string _statusMessage = string.Empty;
+
+    [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
 
     [RelayCommand]
     public async Task AddUser()
     {
-        var result = await _userService.CreateUserAsync(_userCreateDto);
+        if (UserCreateDto == null)
+        {
+            StatusMessage = "Invalid data.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+
+        var validationContext = new ValidationContext(UserCreateDto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(UserCreateDto, validationContext, validationResults, true);
+
+        if (!isValid)
+        {
+            StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+        var result = await _userService.CreateUserAsync(UserCreateDto);
         if (result.Success)
         {
-            _statusMessage = "User was added successfully";
-            _userCreateDto = new UserCreateDto();
+            StatusMessage = "User was added successfully";
+            StatusMessageColor = Colors.Black;
+            UserCreateDto = new UserCreateDto();
         }
         else
         {
-            _statusMessage = result.Message ?? "User could not be added.";
+            StatusMessage = result.Message ?? "User could not be added.";
+            StatusMessageColor = Colors.Firebrick;
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System.Xml.Linq;
-using Business.Dtos;
+﻿using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Business.Models.Responses;
 using Data.Entities;
 using Data.Interfaces;
-using Data.Repositories;
 
 namespace Business.Services;
 
@@ -27,6 +25,7 @@ public class ContactPersonService(IContactPersonRepository contactPersonReposito
 
         if (createdEntity != null)
         {
+            await _contactPersonRepository.SaveAsync();
             return ResultT<ContactPersonModel>.Created(ContactPersonFactory.Create(createdEntity));
         }
         else
@@ -34,7 +33,6 @@ public class ContactPersonService(IContactPersonRepository contactPersonReposito
             return ResultT<ContactPersonModel>.Error("An error occured while creating the c.");
         }
     }
-
 
     // READ
     public async Task<ResultT<ContactPersonEntity>> GetContactPersonEntityByEmailAsync(string email)
@@ -46,4 +44,16 @@ public class ContactPersonService(IContactPersonRepository contactPersonReposito
 
         return ResultT<ContactPersonEntity>.Ok(contactPersonEntity);
     }
+
+    public async Task<ResultT<ContactPersonEntity>> GetContactPersonEntityByIdAsync(int id)
+    {
+        var contactPersonEntity = await _contactPersonRepository.GetAsync(cp => cp.ContactPersonId == id);
+
+        if (contactPersonEntity == null)
+            return ResultT<ContactPersonEntity>.NotFound("Contact person not found.");
+
+        return ResultT<ContactPersonEntity>.Ok(contactPersonEntity);
+    }
+
+
 }

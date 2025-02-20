@@ -6,15 +6,29 @@
              x:DataType="{x:Type viewmodels:AddCustomerViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.AddCustomerView"
+             Shell.NavBarIsVisible="False"
              Title="AddCustomerView">
-    
-    <VerticalStackLayout>
-        <Label Text="Add Customer" VerticalOptions="Center" HorizontalOptions="Center" />
 
-        <Label Text="Customer name:" />
-        <Entry Text="{Binding CustomerCreateDto.CustomerName}" />
-
-        <Button Text="Add Customer" Command="{Binding AddCustomerCommand}" />
-
-    </VerticalStackLayout>
+    <ScrollView>
+        <Grid RowDefinitions="auto, *" Padding="15" BackgroundColor="White">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Add Customer" TextColor="#3f3f3f" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" />
+                <Border Stroke="LightGray"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 5"
+                        Padding="20"
+                        BackgroundColor="#f4f4f4">
+                    <VerticalStackLayout>
+                        <Label Text="Customer name: *" TextColor="Black" Padding="0, 10, 0, 0"/>
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding CustomerCreateDto.CustomerName}" TextColor="#3f3f3f"/>
+                        </Border>
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}"  FontSize="14" FontAttributes="Bold"/>
+                        
+                        <Button Text="Add Customer" Command="{Binding AddCustomerCommand}" BackgroundColor="#cecece" TextColor="White" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

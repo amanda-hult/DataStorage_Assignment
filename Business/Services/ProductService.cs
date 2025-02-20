@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
 using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
@@ -10,9 +10,10 @@ using Data.Repositories;
 
 namespace Business.Services;
 
-public class ProductService(IProductRepository productRepository) : IProductService
+public class ProductService(IProductRepository productRepository, IProjectRepository projectRepository) : IProductService
 {
     private readonly IProductRepository _productRepository = productRepository;
+    private readonly IProjectRepository _projectRepository = projectRepository;
 
     // CREATE
     public async Task<ResultT<ProductModel>> CreateProductAsync(ProductCreateDto dto)
@@ -22,15 +23,24 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         if (exists)
             return ResultT<ProductModel>.Conflict("A product with the same name and currency already exists.");
 
-        //create new product
-        var createdEntity = await _productRepository.CreateAsync(ProductFactory.Create(dto));
+        await _productRepository.BeginTransactionAsync();
 
-        if (createdEntity != null)
+        //create new product
+        try
         {
+            var createdEntity = await _productRepository.CreateAsync(ProductFactory.Create(dto));
+
+            if (createdEntity == null)
+                throw new Exception("Failed to create product entity.");
+
+            await _productRepository.SaveAsync();
+            await _productRepository.CommitTransactionAsync();
             return ResultT<ProductModel>.Created(ProductFactory.Create(createdEntity));
         }
-        else
+        catch (Exception ex)
         {
+            await _productRepository.RollBackTransactionAsync();
+            Debug.WriteLine($"Error creating product: {ex.Message}");
             return ResultT<ProductModel>.Error("An error occured while creating the product.");
         }
     }
@@ -89,9 +99,13 @@ public class ProductService(IProductRepository productRepository) : IProductServ
     {
         // get product entity
         var productEntity = await _productRepository.GetAsync(p => p.ProductId == id);
-
         if (productEntity == null)
             return Result.NotFound("Product not found.");
+
+        // check if product exists in any project
+        bool existsInProject = await _projectRepository.AlreadyExistsAsync(p => p.ProjectProducts.Any(p => p.ProductId == id));
+        if (existsInProject)
+            return Result.Error("Product exists in a project and cannot be deleted.");
 
         //delete product
         var result = await _productRepository.DeleteAsync(p => p.ProductId == id);

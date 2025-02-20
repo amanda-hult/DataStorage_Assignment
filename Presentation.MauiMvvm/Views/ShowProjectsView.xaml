@@ -10,18 +10,36 @@
              Shell.NavBarIsVisible="False"
              Title="ShowProjectsView">
     <ScrollView>
-        <Grid RowDefinitions="auto, *" Padding="10" BackgroundColor="White">
-
-            <Label Text="All Projects" FontSize="28" FontAttributes="Bold" />
-
+        <Grid RowDefinitions="auto, *" Padding="15" BackgroundColor="White">
             <VerticalStackLayout>
-                <Grid ColumnDefinitions="0.5*, 2*, 2*, 2*, 1*, 2*, *" Padding="10,5" ColumnSpacing="5" BackgroundColor="LightGrey">
-                    <Label Text="ProjectId" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="0" HorizontalOptions="Start"/>
-                    <Label Text="Title" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="1" HorizontalOptions="Start" />
-                    <Label Text="Start date" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="2" HorizontalOptions="Start" />
-                    <Label Text="End date" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="3" HorizontalOptions="Start" />
-                    <Label Text="Status" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="4" HorizontalOptions="Start" />
-                    <Label Text="Customer" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="5" HorizontalOptions="Start" />
+                <Label Text="All Projects" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f" Padding="10"/>
+                
+                <Grid ColumnDefinitions="0.5*, 2*, 2*, 2*, 2*, 1*, *" Padding="10,5" ColumnSpacing="5" BackgroundColor="LightGrey">
+                    <Grid VerticalOptions="Center" Grid.Column="0" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Id" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center"/>
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProjectListByProjectIdCommand}" />
+                    </Grid>
+                    <Grid VerticalOptions="Center" Grid.Column="1" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Title" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center" />
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProjectListByTitleCommand}" />
+                    </Grid>
+                    <Grid Grid.Column="2" HorizontalOptions="Start" VerticalOptions="Center" ColumnDefinitions="auto, *">
+                        <Label Text="Customer" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center" />
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProjectListByCustomerNameCommand}" />
+                    </Grid>
+                    <Grid VerticalOptions="Center" Grid.Column="3" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="Start date" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center" />
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProjectListByStartDateCommand}" />
+                    </Grid>
+                    <Grid VerticalOptions="Center" Grid.Column="4" HorizontalOptions="Start" ColumnDefinitions="auto, *">
+                        <Label Text="End date" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center" />
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProjectListByEndDateCommand}" />
+                    </Grid>
+                    <Grid Grid.Column="5" HorizontalOptions="Start" VerticalOptions="Center" ColumnDefinitions="auto, *">
+                        <Label Text="Status" FontAttributes="Bold" TextColor="Black" VerticalTextAlignment="Center" />
+                        <Button Text="&#xf0dc;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent" Grid.Column="1" Command="{Binding SortProjectListByStatusCommand}" />
+                    </Grid>
+
                     <Label Text="Actions" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" Grid.Column="6" HorizontalOptions="End" />
                 </Grid>
 
@@ -34,14 +52,14 @@
                                     StrokeShape="RoundRectangle 3"
                                     Padding="1"
                                     Margin="2, 1">
-                                <Grid ColumnDefinitions="0.5*, 2*, 2*, 2*, 1*, 2*, *" Padding="10,5" ColumnSpacing="5" >
-                                    <Label Text="{Binding ProjectId}" Grid.Column="0" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                <Grid ColumnDefinitions="0.5*, 2*, 2*, 2*, 2*, 1*, *" Padding="10,5" ColumnSpacing="5" >
+                                    <Label Text="{Binding ProjectId}" Grid.Column="0" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" />
                                     <Label Text="{Binding Title}" Grid.Column="1" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Label Text="{Binding StartDate}" Grid.Column="2" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Label Text="{Binding EndDate}" Grid.Column="3" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Label Text="{Binding Status.StatusName}" Grid.Column="4" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Label Text="{Binding Customer.CustomerName}" Grid.Column="5" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Button Text="Edit" Grid.Column="6" HorizontalOptions="End" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditProjectCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProjectsViewModel}}}" />
+                                    <Label Text="{Binding Customer.CustomerName}" Grid.Column="2" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Label Text="{Binding StartDate}" Grid.Column="3" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Label Text="{Binding EndDate}" Grid.Column="4" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Label Text="{Binding Status.StatusName}" Grid.Column="5" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Button Text="&#xF044;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent"  Grid.Column="6" HorizontalOptions="End" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditProjectCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProjectsViewModel}}}" />
 
                                 </Grid>
                             </Border>

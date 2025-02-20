@@ -1,5 +1,7 @@
-﻿using Business.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
+using Business.Dtos;
 using Business.Interfaces;
+using Business.Models;
 using Business.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,6 +21,12 @@ public partial class EditCustomerViewModel : ObservableObject, IQueryAttributabl
     private string _statusMessage = string.Empty;
 
     [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
+
+    [ObservableProperty]
+    private CustomerModel _customerModel;
+
+    [ObservableProperty]
     private CustomerUpdateDto _customerUpdateDto = new CustomerUpdateDto();
 
     [RelayCommand]
@@ -27,15 +35,28 @@ public partial class EditCustomerViewModel : ObservableObject, IQueryAttributabl
         if (CustomerUpdateDto == null)
             return;
 
-        var result = await _customerService.UpdateCustomerAsync(_customerUpdateDto);
+        var validationContext = new ValidationContext(CustomerUpdateDto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(CustomerUpdateDto, validationContext, validationResults, true);
+
+        if (!isValid)
+        {
+            StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+
+        var result = await _customerService.UpdateCustomerAsync(CustomerUpdateDto);
 
         if (result.Success)
         {
-            StatusMessage = result.Message;
+            StatusMessage = "User updated successfully";
+            StatusMessageColor = Colors.Black;
         }
         else
         {
             StatusMessage = result.Message ?? "Failed to update customer";
+            StatusMessageColor = Colors.Firebrick;
         }
     }
 
@@ -46,6 +67,7 @@ public partial class EditCustomerViewModel : ObservableObject, IQueryAttributabl
             var result = await _customerService.GetCustomerByIdAsync(customerId);
             if (result.Success && result.Data != null)
             {
+                CustomerModel = result.Data;
                 CustomerUpdateDto = new CustomerUpdateDto
                 {
                     CustomerId = result.Data.CustomerId,

@@ -6,21 +6,41 @@
              x:DataType="{x:Type viewmodels:AddProductViewModel}"
              
              x:Class="Presentation.MauiMvvm.Views.AddProductView"
+             Shell.NavBarIsVisible="False"
              Title="AddProductView">
-    
-    <VerticalStackLayout>
-        <Label Text="Add Product" VerticalOptions="Center" HorizontalOptions="Center" />
 
-        <Label Text="Service name:" />
-        <Entry Text="{Binding ProductCreateDto.ProductName}" />
+    <ScrollView>
+        <Grid RowDefinitions="auto, *" Padding="15" BackgroundColor="White">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Add Service" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f"/>
 
-        <Label Text="Price per hour:" />
-        <Entry Text="{Binding ProductCreateDto.Price}" />
+                <Border Stroke="LightGray"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 5"
+                        Padding="20"
+                        BackgroundColor="#f4f4f4">
+                    <VerticalStackLayout>
+                        <Label Text="Service name: *" TextColor="Black" Padding="0, 10, 0, 0"/>
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding ProductCreateDto.ProductName}" TextColor="#3f3f3f" />
+                        </Border>
 
-        <Label Text="Currency:" />
-        <Entry Text="{Binding ProductCreateDto.Currency}" />
+                        <Label Text="Price per hour: *" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding ProductCreateDto.Price}" TextColor="#3f3f3f" />
+                        </Border>
 
-        <Button Text="Add Service" Command="{Binding AddProductCommand}" />
+                        <Label Text="Currency: *" TextColor="Black" Padding="0, 10, 0, 0"/>
+                        <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding ProductCreateDto.Currency}" TextColor="#3f3f3f" TextTransform="Uppercase" />
+                        </Border>
 
-    </VerticalStackLayout>
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold" />
+
+                        <Button Text="Add Service" Command="{Binding AddProductCommand}" BackgroundColor="#cecece" TextColor="White" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

@@ -12,20 +12,35 @@
 
 
     <ScrollView>
-        <Grid BackgroundColor="White">
-            <Label Text="Edit User" FontSize="28" FontAttributes="Bold" />
+        <Grid Padding="15" BackgroundColor="White">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Edit User" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="DarkGray"/>
 
-            <VerticalStackLayout>
-                <Label Text="First name: " />
-                <Entry Placeholder="New first name" Text="{Binding UserUpdateDto.FirstName, Mode=TwoWay}" />
+                <Border Stroke="LightGray"
+                        StrokeThickness="0.5"
+                        StrokeShape="RoundRectangle"
+                        Padding="20"
+                        BackgroundColor="#f4f4f4">
+                    <VerticalStackLayout>
+                        <Label Text="First name: " TextColor="Black"/>
+                        <Border Stroke="LightGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding UserModel.FirstName}" Text="{Binding UserUpdateDto.FirstName, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray"/>
+                        </Border>
 
-                <Label Text="Last name: " />
-                <Entry Placeholder="New last name" Text="{Binding UserUpdateDto.LastName, Mode=TwoWay}" />
+                        <Label Text="Last name: " TextColor="Black"/>
+                        <Border Stroke="LightGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding UserModel.LastName}" Text="{Binding UserUpdateDto.LastName, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray" />
+                        </Border>
 
-                <Label Text="Email address: " />
-                <Entry Placeholder="New email address" Text="{Binding UserUpdateDto.Email, Mode=TwoWay}" />
+                        <Label Text="Email address: " TextColor="Black"/>
+                        <Border Stroke="LightGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding UserModel.Email}" Text="{Binding UserUpdateDto.Email, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray"/>
+                        </Border>
 
-                <Button Text="Save" CommandParameter="{Binding UserUpdateDto}" Command="{Binding Path=UpdateUserCommand}" />
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" />
+                        <Button Text="Save" CommandParameter="{Binding UserUpdateDto}" Command="{Binding Path=UpdateUserCommand}" BackgroundColor="#cecece" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
             </VerticalStackLayout>
         </Grid>
     </ScrollView>

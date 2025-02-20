@@ -13,6 +13,7 @@ public class UserCreateDto
     public string LastName { get; set; } = null!;
 
     [Required(ErrorMessage = "Email is required.")]
+    [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email address.")]
     [StringLength(150, ErrorMessage = "Email cannot exceed 150 characters.")]
     public string Email { get; set; } = null!;
 }

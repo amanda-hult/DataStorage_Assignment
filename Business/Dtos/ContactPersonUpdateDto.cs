@@ -2,9 +2,9 @@
 
 namespace Business.Dtos;
 
-public class UserUpdateDto
+public class ContactPersonUpdateDto
 {
-    public int UserId { get; set; }
+    public int ContactPersonId { get; set; }
 
     [Required(ErrorMessage = "First name is required.")]
     [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters.")]
@@ -15,7 +15,11 @@ public class UserUpdateDto
     public string LastName { get; set; } = null!;
 
     [Required(ErrorMessage = "Email is required.")]
-    [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email address.")]
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
     [StringLength(150, ErrorMessage = "Email cannot exceed 150 characters.")]
     public string Email { get; set; } = null!;
+
+    [Required(ErrorMessage = "Phone number is required.")]
+    [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters.")]
+    public string Phone { get; set; } = null!;
 }

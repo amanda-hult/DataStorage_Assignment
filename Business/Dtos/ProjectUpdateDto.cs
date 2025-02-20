@@ -35,7 +35,7 @@ public class ProjectUpdateDto
 
 
     public int ContactPersonId { get; set; }
-    public ContactPersonCreateDto ContactPerson { get; set; } = new();
+    public ContactPersonUpdateDto ContactPerson { get; set; } = new();
 
 
     [Required(ErrorMessage = "At least one service must be selected.")]

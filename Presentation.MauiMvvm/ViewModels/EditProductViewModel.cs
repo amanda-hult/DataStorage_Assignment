@@ -1,5 +1,7 @@
-﻿using Business.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
+using Business.Dtos;
 using Business.Interfaces;
+using Business.Models;
 using Business.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,23 +21,42 @@ public partial class EditProductViewModel : ObservableObject, IQueryAttributable
     private string _statusMessage = string.Empty;
 
     [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
+
+    [ObservableProperty]
     private ProductUpdateDto _productUpdateDto = new ProductUpdateDto();
+
+    [ObservableProperty]
+    private ProductModel _productModel;
 
     [RelayCommand]
     public async Task UpdateProduct()
     {
-        if (_productUpdateDto == null)
+        if (ProductUpdateDto == null)
             return;
 
-        var result = await _productService.UpdateProductAsync(_productUpdateDto);
+        var validationContext = new ValidationContext(ProductModel);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(ProductModel, validationContext, validationResults, true);
+
+        if (!isValid)
+        {
+            StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+
+        var result = await _productService.UpdateProductAsync(ProductUpdateDto);
 
         if (result.Success)
         {
             StatusMessage = "Product updated successfully.";
+            StatusMessageColor = Colors.Black;
         }
         else
         {
             StatusMessage = result.Message ?? "Failed to update product.";
+            StatusMessageColor = Colors.Firebrick;
         }
     }
 
@@ -47,6 +68,7 @@ public partial class EditProductViewModel : ObservableObject, IQueryAttributable
             var result = await _productService.GetProductByIdAsync(productId);
             if (result.Success && result.Data != null)
             {
+                ProductModel = result.Data;
                 ProductUpdateDto = new ProductUpdateDto
                 {
                     ProductId = result.Data.ProductId,

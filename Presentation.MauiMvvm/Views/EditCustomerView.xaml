@@ -11,14 +11,25 @@
              Title="EditCustomerView">
 
     <ScrollView>
-        <Grid BackgroundColor="White" RowDefinitions="*, auto">
-            <Label Text="Edit Customer" FontSize="28" FontAttributes="Bold" TextColor="Black" Grid.Row="0"/>
+        <Grid BackgroundColor="White" Padding="15">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Edit Customer" FontSize="28" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center"/>
 
-            <VerticalStackLayout BackgroundColor="LightGray" Grid.Row="1">
-                <Label Text="Customer name: " />
-                <Entry Placeholder="New customer name" Text="{Binding CustomerUpdateDto.CustomerName, Mode=TwoWay}" />
+                <Border Stroke="LightGray"
+                        StrokeThickness="0.5"
+                        StrokeShape="RoundRectangle"
+                        Padding="20"
+                        BackgroundColor="#f4f4f4">
+                    <VerticalStackLayout>
+                        <Label Text="Customer name: " TextColor="Black"/>
+                        <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding CustomerModel.CustomerName}" Text="{Binding CustomerUpdateDto.CustomerName, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray"/>
+                        </Border>
 
-                <Button Text="Save" CommandParameter="{Binding CustomerUpdateDto}" Command="{Binding Path=UpdateCustomerCommand}" />
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold"/>
+                        <Button Text="Save" CommandParameter="{Binding CustomerUpdateDto}" Command="{Binding Path=UpdateCustomerCommand}" BackgroundColor="#cecece" TextColor="White"/>
+                    </VerticalStackLayout>
+                </Border>
             </VerticalStackLayout>
         </Grid>
     </ScrollView>

@@ -11,102 +11,137 @@
              Title="AddProjectView">
 
     <ScrollView>
-        <Grid BackgroundColor="LightBlue">
-            <VerticalStackLayout Margin="20">
-                <Label Text="New Project" FontSize="28" FontAttributes="Bold" />
+        <Grid BackgroundColor="White" Padding="15">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="New Project" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f"/>
 
                 <Border Stroke="LightGray"
                         StrokeThickness="1"
+                        StrokeShape="RoundRectangle 5"
                         Padding="20"
-                        BackgroundColor="WhiteSmoke">
+                        BackgroundColor="#f4f4f4">
 
                     <VerticalStackLayout>
-                        <Label Text="Project title: " TextColor="Black"/>
-                        <Entry Text="{Binding ProjectCreateDto.Title}" TextColor="DarkGray"/>
+                        <Label Text="Project title: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding ProjectCreateDto.Title}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-                        <Label Text="Project description (optional): " TextColor="Black" />
-                        <Entry Text="{Binding ProjectCreateDto.Description}" TextColor="DarkGray" />
+                        <Label Text="Project description: " FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Entry Text="{Binding ProjectCreateDto.Description}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-                        <Label Text="Start date: " TextColor="Black" />
-                        <Entry Text="{Binding ProjectCreateDto.StartDate}" TextColor="DarkGray" />
+                        <Label Text="Start date: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <DatePicker Date="{Binding ProjectCreateDto.StartDate}" TextColor="#3f3f3f"/>
+                        </Border>
 
-                        <Label Text="End date: " TextColor="Black" />
-                        <Entry Text="{Binding ProjectCreateDto.EndDate}" TextColor="DarkGray" />
+                        <Label Text="End date: " FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <DatePicker Date="{Binding ProjectCreateDto.EndDate}" MinimumDate="{Binding ProjectCreateDto.StartDate}" TextColor="#3f3f3f" />
+                        </Border>
 
-
-
-                        <Label Text="Status: " TextColor="Black" />
-                        <Picker ItemsSource="{Binding AvailableStatuses}"
+                        <Label Text="Status: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Picker ItemsSource="{Binding AvailableStatuses}"
                                 ItemDisplayBinding="{Binding StatusName}"
                                 SelectedItem="{Binding SelectedStatus}"
-                                TextColor="DarkGray"/>
+                                TextColor="#3f3f3f"
+                                BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-
-
-
-
-                        <Label Text="Project Manager: " TextColor="Black" />
-                        <Picker ItemsSource="{Binding AvailableUsers}"
+                        <Label Text="Project Manager: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                            <Picker ItemsSource="{Binding AvailableUsers}"
                                 ItemDisplayBinding="{Binding Email}"
                                 SelectedItem="{Binding SelectedUser}"
-                                TextColor="DarkGray"/>
+                                TextColor="#3f3f3f"
+                                BackgroundColor="#f9f9f9"/>
+                        </Border>
 
-
-
-
-                        <Label Text="Customer: " TextColor="Black" />
-                        <Picker ItemsSource="{Binding AvailableCustomers}"
+                        <Label Text="Customer: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0" />
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" >
+                            <Picker ItemsSource="{Binding AvailableCustomers}"
                                 ItemDisplayBinding="{Binding CustomerName}"
                                 SelectedItem="{Binding SelectedCustomer}"
-                                TextColor="DarkGray"/>
+                                TextColor="#3f3f3f"
+                                BackgroundColor="#f9f9f9"/>
+                        </Border>
+
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" Margin="0, 20">
+                            <VerticalStackLayout Padding="15, 15, 15, 20">
+                                <Label Text="Contact person" FontSize="18" FontAttributes="Bold" TextColor="Black" />
+
+                                <Label Text="First name: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
+                                <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                                    <Entry Text="{Binding ProjectCreateDto.ContactPerson.FirstName}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                                </Border>
+
+                                <Label Text="Last name: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
+                                <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                                    <Entry Text="{Binding ProjectCreateDto.ContactPerson.LastName}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                                </Border>
+
+                                <Label Text="Email address: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
+                                <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                                    <Entry Text="{Binding ProjectCreateDto.ContactPerson.Email}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                                </Border>
+
+                                <Label Text="Phone number: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
+                                <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
+                                    <Entry Text="{Binding ProjectCreateDto.ContactPerson.Phone}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Border>
 
 
+                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" Margin="0, 20">
+                            <Grid Padding="15, 15, 15, 20" RowDefinitions="auto, *" >
 
-
-
-                        <Label Text="Contact person" FontSize="20" FontAttributes="Bold" TextColor="Black"/>
-
-                        <Label Text="First name" TextColor="Black"/>
-                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.FirstName}" TextColor="DarkGray" />
-
-                        <Label Text="Last name" TextColor="Black"/>
-                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.LastName}" TextColor="DarkGray" />
-
-                        <Label Text="Email address" TextColor="Black"/>
-                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.Email}" TextColor="DarkGray" />
-
-                        <Label Text="Phone number" TextColor="Black"/>
-                        <Entry Text="{Binding ProjectCreateDto.ContactPerson.Phone}" TextColor="DarkGray" />
-
-
-
-
-                        <Label Text="Service: " TextColor="Black" />
-                        <Picker ItemsSource="{Binding AvailableProducts}"
-                                ItemDisplayBinding="{Binding ProductName}"
-                                SelectedItem="{Binding SelectedProduct}"
-                                TextColor="DarkGray"/>
-
-                        <Label Text="Hours: " TextColor="Black" />
-                        <Entry Text="{Binding Hours}" TextColor="DarkGray" />
-
-                        <Button Text="Add service" TextColor="Black" Command="{Binding AddProductToProjectCommand}" />
-
-                        <Label Text="Selected services:" TextColor="Black" />
-                        <CollectionView ItemsSource="{Binding SelectedProjectProducts}" >
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Label Text="{Binding Product.ProductId}"  TextColor="DarkGray"/>
-                                        <Label Text="{Binding Product.ProductName}"  TextColor="DarkGray"/>
-                                        <Label Text="{Binding Hours}"  TextColor="DarkGray"/>
+                                <Grid ColumnDefinitions="2*, 2*, 1*" Grid.Row="0" ColumnSpacing="10">
+                                    
+                                    <Grid Grid.Column="0" RowDefinitions="auto, *">
+                                        <Label Text="Service: *" FontAttributes="Bold" TextColor="Black" Grid.Row="0" />
+                                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" Grid.Row="1">
+                                            <Picker ItemsSource="{Binding AvailableProducts}"
+                                                    ItemDisplayBinding="{Binding ProductName}"
+                                                    SelectedItem="{Binding SelectedProduct}"
+                                                    TextColor="#3f3f3f"
+                                                    BackgroundColor="#f9f9f9"/>
+                                        </Border>
                                     </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
 
-                        <Button Text="Create Projects" Command="{Binding AddProjectCommand}" />
-                        <Label Text="{Binding StatusMessage}" />
+
+                                    <Grid Grid.Column="1" RowDefinitions="auto, *">
+                                        <Label Text="Hours: *" FontAttributes="Bold" TextColor="Black" Grid.Row="0" />
+                                        <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" Grid.Row="1">
+                                            <Entry Text="{Binding Hours}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <Button Grid.Column="2" Text="Add service" BackgroundColor="#cecece" TextColor="White" FontAttributes="Bold" VerticalOptions="End" CornerRadius="3" Command="{Binding AddProductToProjectCommand}" />
+                                </Grid>
+
+                                <VerticalStackLayout Grid.Row="1">
+                                    <Label Text="Selected services:" TextDecorations="Underline" FontAttributes="Bold" TextColor="Black" Padding="0, 15, 0, 10" />
+                                    <CollectionView ItemsSource="{Binding SelectedProjectProducts}" >
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="auto, *">
+                                                    <Label Text="{Binding Product.ProductName}" Grid.Column="0" TextColor="#3f3f3f" FontSize="16"/>
+                                                    <Label Text="{Binding Hours, StringFormat=' - {0} hours'}" Grid.Column="1" FontSize="16" TextColor="#3f3f3f"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </VerticalStackLayout>
+                               
+                            </Grid>      
+                        </Border>
+
+                        <Button Text="Create Project" Command="{Binding AddProjectCommand}" BackgroundColor="#cecece" TextColor="White" FontAttributes="Bold" Margin="0, 10, 0, 0"/>
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" Margin="5, 10, 0, 0" />
                     </VerticalStackLayout>
 
 

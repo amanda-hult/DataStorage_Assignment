@@ -11,20 +11,35 @@
              Title="EditProductView">
 
     <ScrollView>
-        <Grid BackgroundColor="White">
-            <Label Text="Edit Service" FontSize="28" FontAttributes="Bold" />
-            
-            <VerticalStackLayout>
-                <Label Text="Service name: " />
-                <Entry Placeholder="New service name" Text="{Binding ProductUpdateDto.ProductName, Mode=TwoWay}" />
+        <Grid Padding="15" BackgroundColor="White">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Edit Service" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f"/>
 
-                <Label Text="Last name: " />
-                <Entry Placeholder="New price" Text="{Binding ProductUpdateDto.Price, Mode=TwoWay}" />
+                <Border Stroke="LightGray"
+                        StrokeThickness="0.5"
+                        StrokeShape="RoundRectangle"
+                        Padding="20"
+                        BackgroundColor="#f4f4f4">
+                    <VerticalStackLayout>
+                        <Label Text="Service name: " TextColor="#3f3f3f" />
+                        <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding ProductModel.ProductName}" Text="{Binding ProductUpdateDto.ProductName, Mode=TwoWay}" TextColor="#3f3f3f" />
+                        </Border>
 
-                <Label Text="Email address: " />
-                <Entry Placeholder="New currency" Text="{Binding ProductUpdateDto.Currency, Mode=TwoWay}" />
+                        <Label Text="Price per hour: " TextColor="Black" />
+                        <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding ProductModel.Price}" Text="{Binding ProductUpdateDto.Price, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray"/>
+                        </Border>
 
-                <Button Text="Save" CommandParameter="{Binding ProductUpdateDto}" Command="{Binding Path=UpdateProductCommand}" />
+                        <Label Text="Currcency: " TextColor="Black" />
+                        <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 3">
+                            <Entry Placeholder="{Binding ProductModel.Currency}" Text="{Binding ProductUpdateDto.Currency, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray" />
+                        </Border>
+
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold"/>
+                        <Button Text="Save" CommandParameter="{Binding ProductUpdateDto}" Command="{Binding Path=UpdateProductCommand}" BackgroundColor="#cecece" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
             </VerticalStackLayout>
         </Grid>
     </ScrollView>

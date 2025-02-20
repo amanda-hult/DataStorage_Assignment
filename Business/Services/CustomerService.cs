@@ -1,4 +1,5 @@
-﻿using Business.Dtos;
+﻿using System.Diagnostics;
+using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
@@ -8,9 +9,11 @@ using Data.Interfaces;
 
 namespace Business.Services;
 
-public class CustomerService(ICustomerRepository customerRepository) : ICustomerService
+public class CustomerService(ICustomerRepository customerRepository, IProjectRepository projectRepository) : ICustomerService
 {
     private readonly ICustomerRepository _customerRepository = customerRepository;
+    private readonly IProjectRepository _projectRepository = projectRepository;
+    //private readonly IProjectService _projectService = projectService;
 
     // CREATE
     public async Task<ResultT<CustomerModel>> CreateCustomerAsync(CustomerCreateDto dto)
@@ -20,18 +23,26 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         if (exists)
             return ResultT<CustomerModel>.Conflict("A customer with the same name already exists.");
 
-        //create new customer
-        var createdEntity = await _customerRepository.CreateAsync(CustomerFactory.Create(dto));
+        await _customerRepository.BeginTransactionAsync();
 
-        if (createdEntity != null)
+        //create new customer
+        try
         {
+            var createdEntity = await _customerRepository.CreateAsync(CustomerFactory.Create(dto));
+
+            if (createdEntity == null)
+                throw new Exception("Failed to create customer entity.");
+
+            await _customerRepository.SaveAsync();
+            await _customerRepository.CommitTransactionAsync();
             return ResultT<CustomerModel>.Created(CustomerFactory.Create(createdEntity));
         }
-        else
+        catch (Exception ex)
         {
+            await _customerRepository.RollBackTransactionAsync();
+            Debug.WriteLine($"Error creating customer: {ex.Message}");
             return ResultT<CustomerModel>.Error("An error occured while creating the customer.");
         }
-
     }
 
     // READ
@@ -53,6 +64,16 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
             return ResultT<CustomerModel>.NotFound("Customer not found.");
 
         return ResultT<CustomerModel>.Ok(CustomerFactory.Create(customerEntity));
+    }
+
+    public async Task<ResultT<CustomerEntity>> GetCustomerEntityByIdAsync(int id)
+    {
+        var customerEntity = await _customerRepository.GetAsync(u => u.CustomerId == id);
+
+        if (customerEntity == null)
+            return ResultT<CustomerEntity>.NotFound("Customer not found.");
+
+        return ResultT<CustomerEntity>.Ok(customerEntity);
     }
 
     public async Task<ResultT<CustomerEntity>> GetCustomerEntityByNameAsync(string name)
@@ -84,6 +105,17 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     // DELETE
     public async Task<Result> DeleteCustomerAsync(int id)
     {
+        // get customer entity
+        var customerEntity = _customerRepository.GetAsync(c => c.CustomerId == id);
+        if (customerEntity == null)
+            return Result.NotFound("Customer not found.");
+
+        // check if customer exists in any project
+        bool existsInProject = await _projectRepository.AlreadyExistsAsync(p => p.CustomerId == id);
+        if (existsInProject)
+            return Result.Error("Customer exists in a project and cannot be deleted.");
+        
+        //delete customer
         var result = await _customerRepository.DeleteAsync(c => c.CustomerId == id);
         return result ? Result.NoContent() : Result.Error("Unable to delete customer.");
     }
