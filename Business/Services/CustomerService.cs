@@ -13,13 +13,13 @@ public class CustomerService(ICustomerRepository customerRepository, IProjectRep
 {
     private readonly ICustomerRepository _customerRepository = customerRepository;
     private readonly IProjectRepository _projectRepository = projectRepository;
-    //private readonly IProjectService _projectService = projectService;
 
     // CREATE
     public async Task<ResultT<CustomerModel>> CreateCustomerAsync(CustomerCreateDto dto)
     {
         //check if customer already exists
-        var exists = await _customerRepository.AlreadyExistsAsync(c => c.CustomerName == dto.CustomerName);
+        string lowerCaseName = dto.CustomerName.ToLower();
+        bool exists = await _customerRepository.AlreadyExistsAsync(c => c.CustomerName == lowerCaseName);
         if (exists)
             return ResultT<CustomerModel>.Conflict("A customer with the same name already exists.");
 

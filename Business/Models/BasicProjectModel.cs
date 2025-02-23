@@ -10,7 +10,4 @@ public class BasicProjectModel
     public DateTime? EndDate { get; set; }
     public CustomerModel Customer { get; set; } = null!;
     public StatusDto Status { get; set; } = null!;
-
-    //public string? CustomerName { get; set; }
-    //public string StatusName { get; set; } = null!;
 }

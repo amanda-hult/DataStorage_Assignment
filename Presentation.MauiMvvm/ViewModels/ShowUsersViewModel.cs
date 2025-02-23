@@ -16,11 +16,7 @@ public partial class ShowUsersViewModel : ObservableObject
         UserList = new ObservableCollection<UserModel>();
     }
 
-    [ObservableProperty]
-    private string _statusMessage = string.Empty;
-
-    [ObservableProperty]
-    private Color _statusMessageColor = Colors.Black;
+    #region Observable properties
 
     [ObservableProperty]
     private ObservableCollection<UserModel> _userList;
@@ -37,56 +33,15 @@ public partial class ShowUsersViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSortedAscendingByEmail = false;
 
-    [RelayCommand]
-    private async Task LoadAllUsers()
-    {
-        StatusMessage = string.Empty;
+    [ObservableProperty]
+    private string _statusMessage = string.Empty;
 
-        var result = await _userService.GetAllUsersAsync();
+    [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
 
-        if (result.Success && result.Data != null)
-        {
-            UserList.Clear();
-            foreach (var user in result.Data)
-            {
-                UserList.Add(user);
-            }
-        }
-        else
-        {
-            StatusMessage = "Couldn't load users.";
-        }
-    }
+    #endregion
 
-    [RelayCommand]
-    private async Task DeleteUser(UserModel user)
-    {
-        if (user == null)
-        {
-            StatusMessage = "Invalid user.";
-            StatusMessageColor = Colors.Firebrick;
-            return;
-        }
-
-        bool confirm = await Shell.Current.DisplayAlert("Confirmation", "Please confirm deletion", "Confirm", "Cancel");
-        if (confirm)
-        {
-            var result = await _userService.DeleteUserAsync(user.UserId);
-
-            if (result.Success)
-            {
-                UserList.Remove(user);
-                StatusMessage = "User deleted successfully.";
-                StatusMessageColor = Colors.Black;
-            }
-            else
-            {
-                StatusMessage = "User exists in a project and cannot be deleted.";
-                StatusMessageColor = Colors.Firebrick;
-            }
-        }
-
-    }
+    #region Sort users
 
     [RelayCommand]
     private void SortUserListByUserId()
@@ -166,6 +121,57 @@ public partial class ShowUsersViewModel : ObservableObject
         }
 
         IsSortedAscendingByEmail = !IsSortedAscendingByEmail;
+    }
+    #endregion
+
+    [RelayCommand]
+    private async Task LoadAllUsers()
+    {
+        StatusMessage = string.Empty;
+
+        var result = await _userService.GetAllUsersAsync();
+
+        if (result.Success && result.Data != null)
+        {
+            UserList.Clear();
+            foreach (var user in result.Data)
+            {
+                UserList.Add(user);
+            }
+        }
+        else
+        {
+            StatusMessage = "Couldn't load users.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteUser(UserModel user)
+    {
+        if (user == null)
+        {
+            StatusMessage = "Invalid user.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
+
+        bool confirm = await Shell.Current.DisplayAlert("Confirmation", "Please confirm deletion", "Confirm", "Cancel");
+        if (confirm)
+        {
+            var result = await _userService.DeleteUserAsync(user.UserId);
+
+            if (result.Success)
+            {
+                UserList.Remove(user);
+                StatusMessage = "User deleted successfully.";
+                StatusMessageColor = Colors.Black;
+            }
+            else
+            {
+                StatusMessage = "Unable to delete user. User cannot be deleted if it exists in a project.";
+                StatusMessageColor = Colors.Firebrick;
+            }
+        }
     }
 
     [RelayCommand]

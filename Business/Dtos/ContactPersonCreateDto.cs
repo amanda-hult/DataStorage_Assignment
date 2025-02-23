@@ -18,6 +18,7 @@ public class ContactPersonCreateDto
     public string Email { get; set; } = null!;
 
     [Required(ErrorMessage = "Phone number is required.")]
+    [RegularExpression(@"^\+?[0-9]{1,4}?[-.\s]?(\(?[0-9]{1,3}?\)?[-.\s]?)*[0-9]{3,20}$", ErrorMessage = "Invalid phone number.")]
     [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters.")]
     public string Phone { get; set; } = null!;
 }

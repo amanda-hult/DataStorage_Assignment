@@ -33,7 +33,7 @@
 
                         <Label Text="Currcency: " TextColor="Black" />
                         <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 3">
-                            <Entry Placeholder="{Binding ProductModel.Currency}" Text="{Binding ProductUpdateDto.Currency, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray" />
+                            <Entry Placeholder="{Binding ProductModel.Currency}" Text="{Binding ProductUpdateDto.Currency, Mode=TwoWay}" TextTransform="Uppercase" TextColor="#3f3f3f" PlaceholderColor="DarkGray" />
                         </Border>
 
                         <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold"/>

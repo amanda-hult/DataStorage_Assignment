@@ -5,31 +5,24 @@ using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
-using Business.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Presentation.MauiMvvm.ViewModels;
 
-public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
+public partial class EditProjectViewModel(IProjectService projectService, IStatusService statusService, IProductService productService, ICustomerService customerService, IUserService userService) : ObservableObject, IQueryAttributable
 {
-    private readonly IProjectService _projectService;
-    private readonly IStatusService _statusService;
-    private readonly IProductService _productService;
-    private readonly ICustomerService _customerService;
-    private readonly IUserService _userService;
+    private readonly IProjectService _projectService = projectService;
+    private readonly IStatusService _statusService = statusService;
+    private readonly IProductService _productService = productService;
+    private readonly ICustomerService _customerService = customerService;
+    private readonly IUserService _userService = userService;
 
-    public EditProjectViewModel(IProjectService projectService, IStatusService statusService, IProductService productService, ICustomerService customerService, IUserService userService)
-    {
-        _projectService = projectService;
-        _statusService = statusService;
-        _productService = productService;
-        _customerService = customerService;
-        _userService = userService;
-    }
+    public bool IsReadMode => !IsEditMode;
 
+    #region Observable properties
     [ObservableProperty]
-    private string _statusMessage = string.Empty;
+    private bool _isEditMode = false;
 
     [ObservableProperty]
     private DetailedProjectModel _detailedProjectModel;
@@ -54,7 +47,6 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
     private ObservableCollection<ProjectProductDto> _selectedProjectProducts = new();
 
 
-
     [ObservableProperty]
     private ProductModel _selectedProduct;
 
@@ -68,16 +60,17 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
     private UserModel _selectedUser;
 
 
-
     [ObservableProperty]
     private int _hours;
 
     [ObservableProperty]
-    private bool _isEditMode = false;
+    private string _statusMessage = string.Empty;
 
-    public bool IsReadMode => !IsEditMode;
+    [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
+    #endregion
 
-
+    #region Load values
 
     public async Task LoadProducts()
     {
@@ -96,7 +89,6 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
             }
             SetSelectedProducts();
         });
-
     }
 
     public async Task LoadStatuses()
@@ -158,9 +150,9 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
             SetSelectedUser();
         });
     }
+    #endregion
 
-
-
+    #region SetSelectedValues
     private void SetSelectedStatus()
     {
         if (DetailedProjectModel != null)
@@ -183,12 +175,9 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
         {
             SelectedUser = AvailableUsers.FirstOrDefault(u => u.UserId == DetailedProjectModel.User.UserId);
 
-            //Debug.WriteLine($"Selected user updated: {SelectedUser.FirstName} {SelectedUser.LastName}");
-
             OnPropertyChanged(nameof(SelectedUser));
         }
     }
-
     private void SetSelectedProducts()
     {
         if (DetailedProjectModel != null)
@@ -201,8 +190,9 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
             }));
         }
     }
+    #endregion
 
-
+    #region OnSelectedChanged
     partial void OnSelectedUserChanged(UserModel value)
     {
         if (value != null)
@@ -234,8 +224,9 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
             OnPropertyChanged(nameof(ProjectUpdateDto));
         }
     }
+    #endregion
 
-
+    #region Relay Commands
     [RelayCommand]
     private async Task ToggleEditMode()
     {
@@ -243,40 +234,11 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
         OnPropertyChanged(nameof(IsReadMode));
         OnPropertyChanged(nameof(DetailedProjectModel));
 
-        //if (IsEditMode)
-        //{
-            await LoadStatuses();
-            await LoadProducts();
-            await LoadCustomers();
-            await LoadUsers();
-        //}
-        //if (IsReadMode)
-        //{
-        //    SetSelectedCustomer();
-        //    SetSelectedProducts();
-        //    SetSelectedStatus();
-        //    SetSelectedUser();
-        //}
+        await LoadStatuses();
+        await LoadProducts();
+        await LoadCustomers();
+        await LoadUsers();
     }
-
-    public async void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (query.ContainsKey("ProjectId") && int.TryParse(query["ProjectId"].ToString(), out int projectId))
-        {
-            var result = await _projectService.GetProjectWithDetailsAsync(projectId);
-
-            if (result.Success && result.Data != null)
-            {
-                DetailedProjectModel = result.Data;
-                ProjectUpdateDto = ProjectFactory.Create(DetailedProjectModel);
-            }
-            else
-            {
-                StatusMessage = "Failed to load project details.";
-            }
-        }
-    }
-
 
     [RelayCommand]
     public void AddProductToProject()
@@ -284,25 +246,31 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
         if (SelectedProduct == null || Hours <= 0)
         {
             StatusMessage = "Select a service and enter hours.";
+            StatusMessageColor = Colors.Firebrick;
             return;
         }
 
         var existingProduct = SelectedProjectProducts.FirstOrDefault(p => p.ProductId == SelectedProduct.ProductId);
         if (existingProduct != null)
         {
-            existingProduct.Hours = Hours;
-        }
-        else
-        {
-            ProjectUpdateDto.ProjectProducts.Add(new ProjectProductDto
-            {
-                ProductId = SelectedProduct.ProductId,
-                Product = SelectedProduct,
-                Hours = Hours
-            });
+            StatusMessage = "Service already added.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
         }
 
-        SelectedProduct = null;
+        var newProduct = new ProjectProductDto
+        {
+            ProductId = SelectedProduct.ProductId,
+            Product = SelectedProduct,
+            Hours = Hours
+        };
+
+        ProjectUpdateDto.ProjectProducts.Add(newProduct);
+        SelectedProjectProducts.Add(newProduct);
+
+        OnPropertyChanged(nameof(SelectedProjectProducts));
+
+        SelectedProduct = null!;
         Hours = 0;
     }
 
@@ -320,9 +288,7 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
             var itemToRemove = SelectedProjectProducts.FirstOrDefault(p => p.ProductId == product.ProductId);
             if (itemToRemove != null)
             {
-
                 SelectedProjectProducts.Remove(itemToRemove);
-
             }
 
             OnPropertyChanged(nameof(SelectedProjectProducts));
@@ -341,7 +307,6 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
             var validationContext = new ValidationContext(ProjectUpdateDto);
             var validationResults = new List<ValidationResult>();
             bool isValid = Validator.TryValidateObject(ProjectUpdateDto, validationContext, validationResults, true);
-
             if (ProjectUpdateDto.ContactPerson != null)
             {
                 var contactValidationContext = new ValidationContext(ProjectUpdateDto.ContactPerson);
@@ -350,48 +315,40 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
                 isValid = isValid && isContactValid;
             }
 
-
             if (!isValid)
             {
                 StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
+                StatusMessageColor = Colors.Firebrick;
                 return;
             }
-            Debug.WriteLine($"Updating product: {System.Text.Json.JsonSerializer.Serialize(ProjectUpdateDto, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })}");
+
+            if (ProjectUpdateDto.EndDate.HasValue && ProjectUpdateDto.EndDate < ProjectUpdateDto.StartDate)
+            {
+                StatusMessage = "End date cannot be earlier than start date.";
+                StatusMessageColor = Colors.Firebrick;
+                return;
+            }
+
             var result = await _projectService.UpdateProjectAsync(ProjectUpdateDto);
+            if (result.StatusCode == 409)
+            {
+                StatusMessage = "Enable to update project. Check if a project with the same title and customerId already exists, or if the email address is used by another contact person.";
+                StatusMessageColor = Colors.Firebrick;
+                return;
+            }
 
             if (result.Success)
             {
-                var dbCheck = await _projectService.GetProjectWithDetailsAsync(ProjectUpdateDto.ProjectId);
-                Debug.WriteLine($"DB User: {dbCheck.Data.User.FirstName} {dbCheck.Data.User.LastName}");
-
-                Debug.WriteLine("Project updated successfully");
                 StatusMessage = result.Message ?? "Project updated successfully";
-            }
-            else
-            {
-                Debug.WriteLine($"Project update failed: {result.Message}");
-                StatusMessage = result.Message ?? "Failed to update project.";
-            }
-
-            var updatedProjectDetails = await _projectService.GetProjectWithDetailsAsync(ProjectUpdateDto.ProjectId);
-            if (updatedProjectDetails.Success)
-            {
-                DetailedProjectModel = updatedProjectDetails.Data;
+                StatusMessageColor = Colors.Black;
+                DetailedProjectModel = result.Data;
                 ProjectUpdateDto = ProjectFactory.Create(DetailedProjectModel);
             }
             else
             {
-                Debug.WriteLine("Failed to load project.");
+                StatusMessage = result.Message ?? "Failed to update project.";
+                StatusMessageColor = Colors.Firebrick;
             }
-
-            //await LoadStatuses();
-            //await LoadProducts();
-            //await LoadCustomers();
-            //await LoadUsers();
-            //SetSelectedCustomer();
-            //SetSelectedProducts();
-            //SetSelectedStatus();
-            //SetSelectedUser();
 
             await ToggleEditMode();
         }
@@ -399,24 +356,24 @@ public partial class EditProjectViewModel : ObservableObject, IQueryAttributable
         {
             Debug.WriteLine($"Exception in UpdateProject: {ex.Message}");
         }
-
     }
+    #endregion
 
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.ContainsKey("ProjectId") && int.TryParse(query["ProjectId"].ToString(), out int projectId))
+        {
+            var result = await _projectService.GetProjectWithDetailsAsync(projectId);
 
-
-
-
-    //[RelayCommand]
-    //private void CheckProjectData()
-    //{
-    //    if (_detailedProjectModel == null)
-    //    {
-    //        Debug.WriteLine("DetailedProjectModel is NULL in EditProjectViewModel.");
-    //    }
-    //    else
-    //    {
-    //        Debug.WriteLine($"DetailedProjectModel exists: {DetailedProjectModel.ProjectId}, Title: {DetailedProjectModel?.Title}");
-    //    }
-    //}
-
+            if (result.Success && result.Data != null)
+            {
+                DetailedProjectModel = result.Data;
+                ProjectUpdateDto = ProjectFactory.Create(DetailedProjectModel);
+            }
+            else
+            {
+                StatusMessage = "Failed to load project details.";
+            }
+        }
+    }
 }

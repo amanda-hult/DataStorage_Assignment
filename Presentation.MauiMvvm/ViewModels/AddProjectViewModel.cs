@@ -35,6 +35,7 @@ public partial class AddProjectViewModel : ObservableObject
         });
     }
 
+    #region Observable properties
 
     [ObservableProperty]
     private ProjectCreateDto _projectCreateDto = new ProjectCreateDto
@@ -60,7 +61,6 @@ public partial class AddProjectViewModel : ObservableObject
     private ObservableCollection<ProjectProductDto> _selectedProjectProducts = new();
 
 
-
     [ObservableProperty]
     private ProductModel _selectedProduct;
 
@@ -74,7 +74,6 @@ public partial class AddProjectViewModel : ObservableObject
     private UserModel _selectedUser;
 
 
-
     [ObservableProperty]
     private int _hours;
 
@@ -84,6 +83,9 @@ public partial class AddProjectViewModel : ObservableObject
     [ObservableProperty]
     private Color _statusMessageColor = Colors.Black;
 
+    #endregion
+
+    #region OnSelectedChanged
     partial void OnSelectedStatusChanged(StatusDto value)
     {
         if (value != null)
@@ -91,7 +93,6 @@ public partial class AddProjectViewModel : ObservableObject
             ProjectCreateDto.StatusId = value.StatusId;
         }
     }
-
     partial void OnSelectedCustomerChanged(CustomerModel value)
     {
         if (value != null)
@@ -100,7 +101,6 @@ public partial class AddProjectViewModel : ObservableObject
             ProjectCreateDto.CustomerId = value.CustomerId;
         }
     }
-
     partial void OnSelectedUserChanged(UserModel value)
     {
         if (value != null)
@@ -109,6 +109,9 @@ public partial class AddProjectViewModel : ObservableObject
             ProjectCreateDto.UserId = value.UserId;
         }
     }
+    #endregion
+
+    #region Load values
     public async Task LoadProducts()
     {
         var products = await _productService.GetAllProductsAsync();
@@ -125,7 +128,6 @@ public partial class AddProjectViewModel : ObservableObject
                 AvailableProducts.Add(product);
             }
         });
-
     }
 
     public async Task LoadStatuses()
@@ -158,10 +160,10 @@ public partial class AddProjectViewModel : ObservableObject
 
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            _availableCustomers.Clear();
+            AvailableCustomers.Clear();
             foreach (var customer in customers.Data)
             {
-                _availableCustomers.Add(customer);
+                AvailableCustomers.Add(customer);
             }
         });
     }
@@ -177,13 +179,16 @@ public partial class AddProjectViewModel : ObservableObject
 
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            _availableUsers.Clear();
+            AvailableUsers.Clear();
             foreach (var user in users.Data)
             {
-                _availableUsers.Add(user);
+                AvailableUsers.Add(user);
             }
         });
     }
+    #endregion
+
+    #region RelayCommands
 
     [RelayCommand]
     public void AddProductToProject()
@@ -244,7 +249,6 @@ public partial class AddProjectViewModel : ObservableObject
             isValid = isValid && isContactValid;
         }
 
-
         if (!isValid)
         {
             StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
@@ -253,16 +257,25 @@ public partial class AddProjectViewModel : ObservableObject
         }
 
         ProjectCreateDto.ProjectProducts = SelectedProjectProducts.ToList();
+
         var result = await _projectService.CreateProjectAsync(ProjectCreateDto);
+        if (result.StatusCode == 409)
+        {
+            StatusMessage = "Project with the same title and customerId already exists.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
         if (result.Success)
         {
-            StatusMessage = $"{result.Message}";
+            StatusMessage = "Project was created successfully";
             StatusMessageColor = Colors.Black;
+            ProjectCreateDto = new ProjectCreateDto();
         }
         else
         {
-            StatusMessage = "Failed to creat project.";
+            StatusMessage = "Failed to create project.";
             StatusMessageColor = Colors.Firebrick;
         }
     }
+    #endregion
 }

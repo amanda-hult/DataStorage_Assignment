@@ -2,32 +2,28 @@
 using Business.Dtos;
 using Business.Interfaces;
 using Business.Models;
-using Business.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Presentation.MauiMvvm.ViewModels;
 
-public partial class EditProductViewModel : ObservableObject, IQueryAttributable
+public partial class EditProductViewModel(IProductService productService) : ObservableObject, IQueryAttributable
 {
-    private readonly IProductService _productService;
+    private readonly IProductService _productService = productService;
 
-    public EditProductViewModel(IProductService productService)
-    {
-        _productService = productService;
-    }
+    #region Observable properties
+    [ObservableProperty]
+    private ProductUpdateDto _productUpdateDto = new ProductUpdateDto();
+
+    [ObservableProperty]
+    private ProductModel _productModel;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
 
     [ObservableProperty]
     private Color _statusMessageColor = Colors.Black;
-
-    [ObservableProperty]
-    private ProductUpdateDto _productUpdateDto = new ProductUpdateDto();
-
-    [ObservableProperty]
-    private ProductModel _productModel;
+    #endregion
 
     [RelayCommand]
     public async Task UpdateProduct()
@@ -38,7 +34,6 @@ public partial class EditProductViewModel : ObservableObject, IQueryAttributable
         var validationContext = new ValidationContext(ProductModel);
         var validationResults = new List<ValidationResult>();
         bool isValid = Validator.TryValidateObject(ProductModel, validationContext, validationResults, true);
-
         if (!isValid)
         {
             StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
@@ -47,7 +42,12 @@ public partial class EditProductViewModel : ObservableObject, IQueryAttributable
         }
 
         var result = await _productService.UpdateProductAsync(ProductUpdateDto);
-
+        if (result.StatusCode == 409)
+        {
+            StatusMessage = "A service with the same name and currency already exists.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
         if (result.Success)
         {
             StatusMessage = "Product updated successfully.";
@@ -62,7 +62,6 @@ public partial class EditProductViewModel : ObservableObject, IQueryAttributable
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-
         if (query.TryGetValue("ProductId", out var productIdObj) && productIdObj is string productIdStr && int.TryParse(productIdStr, out int productId))
         {
             var result = await _productService.GetProductByIdAsync(productId);
@@ -82,6 +81,5 @@ public partial class EditProductViewModel : ObservableObject, IQueryAttributable
                 StatusMessage = "Product not found.";
             }
         }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Business.Interfaces;
 using Business.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,9 +16,7 @@ public partial class ShowProjectsViewModel : ObservableObject
         BasicProjectList = new ObservableCollection<BasicProjectModel>();
     }
 
-    [ObservableProperty]
-    private string _statusMessage = string.Empty;
-
+    #region Observable properties
     [ObservableProperty]
     private ObservableCollection<BasicProjectModel> _basicProjectList;
 
@@ -41,27 +38,11 @@ public partial class ShowProjectsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSortedAscendingByCustomerName = false;
 
+    [ObservableProperty]
+    private string _statusMessage = string.Empty;
+    #endregion
 
-
-    [RelayCommand]
-    private async Task LoadAllProjects()
-    {
-        var result = await _projectService.GetAllProjectsAsync();
-        if (result.Success && result.Data != null)
-        {
-            BasicProjectList.Clear();
-            foreach (var project in result.Data)
-            {
-                BasicProjectList.Add(project);
-            }
-        }
-        else
-        {
-            StatusMessage = "Couldn't load projects";
-        }
-    }
-
-
+    #region Sort projects
     [RelayCommand]
     private void SortProjectListByProjectId()
     {
@@ -181,6 +162,26 @@ public partial class ShowProjectsViewModel : ObservableObject
 
         IsSortedAscendingByCustomerName = !IsSortedAscendingByCustomerName;
     }
+    #endregion
+
+
+    [RelayCommand]
+    private async Task LoadAllProjects()
+    {
+        var result = await _projectService.GetAllProjectsAsync();
+        if (result.Success && result.Data != null)
+        {
+            BasicProjectList.Clear();
+            foreach (var project in result.Data)
+            {
+                BasicProjectList.Add(project);
+            }
+        }
+        else
+        {
+            StatusMessage = "Couldn't load projects";
+        }
+    }
 
     [RelayCommand]
     private async Task NavigateToEditProject(BasicProjectModel project)
@@ -191,4 +192,5 @@ public partial class ShowProjectsViewModel : ObservableObject
         };
             await Shell.Current.GoToAsync("EditProjectView", parameters);
     }
+
 }

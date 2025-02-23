@@ -27,35 +27,6 @@ public static class UserFactory
         };
     }
 
-    //public static UserEntity Create(UserModel model)
-    //{
-    //    return new UserEntity
-    //    {
-    //        UserId = model.UserId,
-    //        FirstName = model.FirstName,
-    //        LastName = model.LastName,
-    //        Email = model.Email
-    //    };
-    //}
-
-    //public static UserWithProjectDto ShowWithProjectDetails(UserEntity entity)
-    //{
-    //    return new UserWithProjectDto
-    //    {
-    //        UserId = entity.UserId,
-    //        FirstName = entity.FirstName,
-    //        LastName = entity.LastName,
-    //        Projects = entity.Projects.Select(p => new BasicProjectModel
-    //        {
-    //            Title = p.Title,
-    //            StartDate = p.StartDate,
-    //            EndDate = p.EndDate,
-    //            CustomerName = p.Customer.CustomerName,
-    //            StatusName = p.Status.StatusName
-    //        }).ToList()
-    //    };
-    //}
-
     public static void Update(UserEntity entity, UserUpdateDto dto)
     {
         entity.UserId = dto.UserId;

@@ -6,7 +6,6 @@ using Business.Models;
 using Business.Models.Responses;
 using Data.Entities;
 using Data.Interfaces;
-using Data.Repositories;
 
 namespace Business.Services;
 
@@ -19,7 +18,7 @@ public class UserService(IUserRepository userRepository, IProjectRepository proj
     public async Task<ResultT<UserModel>> CreateUserAsync(UserCreateDto dto)
     {
         // check if user already exists
-        var exists = await _userRepository.AlreadyExistsAsync(u => u.Email == dto.Email);
+        bool exists = await _userRepository.AlreadyExistsAsync(u => u.Email == dto.Email);
         if (exists)
             return ResultT<UserModel>.Conflict("A user with the same email already exists.");
 

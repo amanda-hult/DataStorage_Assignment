@@ -11,7 +11,6 @@
              Title="ShowCustomersView">
     <ScrollView>
         <Grid RowDefinitions="auto, *" Padding="15" BackgroundColor="White">
-
             <VerticalStackLayout>
                 <Label Text="All Customers" FontSize="28" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#3f3f3f" Padding="10"/>
                 

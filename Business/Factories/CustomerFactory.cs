@@ -24,33 +24,6 @@ public static class CustomerFactory
         };
     }
 
-    //public static CustomerEntity Create(CustomerModel model)
-    //{
-    //    return new CustomerEntity
-    //    {
-    //        CustomerId = model.CustomerId,
-    //        CustomerName = model.CustomerName,
-    //    };
-    //}
-
-
-    //public static CustomerWithProjectDto Create(CustomerEntity entity)
-    //{
-    //    return new CustomerWithProjectDto
-    //    {
-    //        CustomerId = entity.CustomerId,
-    //        CustomerName = entity.CustomerName,
-    //        Projects = entity.Projects.Select(p => new BasicProjectModel
-    //        {
-    //            Title = p.Title,
-    //            StartDate = p.StartDate,
-    //            EndDate = p.EndDate,
-    //            StatusName = p.Status.StatusName
-    //        }).ToList()
-    //    };
-    //}
-
-
     public static void Connect(CustomerEntity customer, ContactPersonEntity contactPerson)
     {
         customer.ContactPersonId = contactPerson.ContactPersonId;

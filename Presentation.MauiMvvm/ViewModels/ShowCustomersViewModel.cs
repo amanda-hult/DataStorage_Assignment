@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Business.Interfaces;
 using Business.Models;
-using Business.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -17,15 +16,9 @@ public partial class ShowCustomersViewModel : ObservableObject
         CustomerList = new ObservableCollection<CustomerModel>();
     }
 
-    [ObservableProperty]
-    private string _statusMessage = string.Empty;
-
-    [ObservableProperty]
-    private Color _statusMessageColor = Colors.Black;
-
+    #region Observable properties
     [ObservableProperty]
     private ObservableCollection<CustomerModel> _customerList;
-
 
     [ObservableProperty]
     private bool _isSortedAscendingByCustomerId = true;
@@ -33,6 +26,55 @@ public partial class ShowCustomersViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSortedAscendingByCustomerName = false;
 
+    [ObservableProperty]
+    private string _statusMessage = string.Empty;
+
+    [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
+    #endregion
+
+    #region Sort customers
+    [RelayCommand]
+    private void SortCustomerListByCustomerId()
+    {
+        if (CustomerList == null)
+            return;
+
+        if (IsSortedAscendingByCustomerId)
+        {
+            var sortedList = CustomerList.OrderByDescending(c => c.CustomerId).ToList();
+            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
+        }
+        else
+        {
+            var sortedList = CustomerList.OrderBy(p => p.CustomerId).ToList();
+            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
+        }
+
+        IsSortedAscendingByCustomerId = !IsSortedAscendingByCustomerId;
+    }
+
+    [RelayCommand]
+    private void SortCustomerListByCustomerName()
+    {
+        if (CustomerList == null)
+            return;
+
+        if (IsSortedAscendingByCustomerName)
+        {
+            var sortedList = CustomerList.OrderByDescending(c => c.CustomerName).ToList();
+            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
+        }
+        else
+        {
+            var sortedList = CustomerList.OrderBy(p => p.CustomerName).ToList();
+            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
+        }
+
+        IsSortedAscendingByCustomerName = !IsSortedAscendingByCustomerName;
+    }
+    #endregion
+    
     [RelayCommand]
     private async Task LoadCustomers()
     {
@@ -77,52 +119,11 @@ public partial class ShowCustomersViewModel : ObservableObject
             }
             else
             {
-                StatusMessage = "Customer exists in a project and cannot be deleted.";
+                StatusMessage = "Unable to delete customer. Customer cannot be deleted if it exists in a project.";
                 StatusMessageColor = Colors.Firebrick;
             }
         }
     }
-
-    [RelayCommand]
-    private void SortCustomerListByCustomerId()
-    {
-        if (CustomerList == null)
-            return;
-
-        if (IsSortedAscendingByCustomerId)
-        {
-            var sortedList = CustomerList.OrderByDescending(c => c.CustomerId).ToList();
-            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
-        }
-        else
-        {
-            var sortedList = CustomerList.OrderBy(p => p.CustomerId).ToList();
-            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
-        }
-
-        IsSortedAscendingByCustomerId = !IsSortedAscendingByCustomerId;
-    }
-
-    [RelayCommand]
-    private void SortCustomerListByCustomerName()
-    {
-        if (CustomerList == null)
-            return;
-
-        if (IsSortedAscendingByCustomerName)
-        {
-            var sortedList = CustomerList.OrderByDescending(c => c.CustomerName).ToList();
-            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
-        }
-        else
-        {
-            var sortedList = CustomerList.OrderBy(p => p.CustomerName).ToList();
-            CustomerList = new ObservableCollection<CustomerModel>(sortedList);
-        }
-
-        IsSortedAscendingByCustomerName = !IsSortedAscendingByCustomerName;
-    }
-
 
     [RelayCommand]
     private async Task NavigateToEditCustomer(CustomerModel customer)

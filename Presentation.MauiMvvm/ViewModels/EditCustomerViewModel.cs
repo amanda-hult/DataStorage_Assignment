@@ -2,32 +2,28 @@
 using Business.Dtos;
 using Business.Interfaces;
 using Business.Models;
-using Business.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Presentation.MauiMvvm.ViewModels;
 
-public partial class EditCustomerViewModel : ObservableObject, IQueryAttributable
+public partial class EditCustomerViewModel(ICustomerService customerService) : ObservableObject, IQueryAttributable
 {
-    private readonly ICustomerService _customerService;
+    private readonly ICustomerService _customerService = customerService;
 
-    public EditCustomerViewModel(ICustomerService customerService)
-    {
-        _customerService = customerService;
-    }
+    #region Observable properties
+    [ObservableProperty]
+    private CustomerModel _customerModel;
+
+    [ObservableProperty]
+    private CustomerUpdateDto _customerUpdateDto = new CustomerUpdateDto();
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
 
     [ObservableProperty]
     private Color _statusMessageColor = Colors.Black;
-
-    [ObservableProperty]
-    private CustomerModel _customerModel;
-
-    [ObservableProperty]
-    private CustomerUpdateDto _customerUpdateDto = new CustomerUpdateDto();
+    #endregion
 
     [RelayCommand]
     public async Task UpdateCustomer()
@@ -38,7 +34,6 @@ public partial class EditCustomerViewModel : ObservableObject, IQueryAttributabl
         var validationContext = new ValidationContext(CustomerUpdateDto);
         var validationResults = new List<ValidationResult>();
         bool isValid = Validator.TryValidateObject(CustomerUpdateDto, validationContext, validationResults, true);
-
         if (!isValid)
         {
             StatusMessage = string.Join("\n", validationResults.Select(x => x.ErrorMessage));
@@ -47,7 +42,12 @@ public partial class EditCustomerViewModel : ObservableObject, IQueryAttributabl
         }
 
         var result = await _customerService.UpdateCustomerAsync(CustomerUpdateDto);
-
+        if (result.StatusCode == 409)
+        {
+            StatusMessage = "A customer with the same name already exists.";
+            StatusMessageColor = Colors.Firebrick;
+            return;
+        }
         if (result.Success)
         {
             StatusMessage = "User updated successfully";

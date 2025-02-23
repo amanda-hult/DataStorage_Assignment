@@ -60,7 +60,6 @@
                                     <Label Text="{Binding EndDate}" Grid.Column="4" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
                                     <Label Text="{Binding Status.StatusName}" Grid.Column="5" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
                                     <Button Text="&#xF044;" FontFamily="FontAwesomeSolid" TextColor="DarkGrey" BackgroundColor="Transparent"  Grid.Column="6" HorizontalOptions="End" CommandParameter="{Binding .}" Command="{Binding Path=NavigateToEditProjectCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ShowProjectsViewModel}}}" />
-
                                 </Grid>
                             </Border>
                         </DataTemplate>

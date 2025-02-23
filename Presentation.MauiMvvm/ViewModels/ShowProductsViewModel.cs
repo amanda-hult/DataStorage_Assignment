@@ -16,12 +16,7 @@ public partial class ShowProductsViewModel : ObservableObject
         ProductList = new ObservableCollection<ProductModel>();
     }
 
-    [ObservableProperty]
-    private string _statusMessage = null!;
-
-    [ObservableProperty]
-    private Color _statusMessageColor = Colors.Black;
-
+    #region Observable properties
     [ObservableProperty]
     private ObservableCollection<ProductModel> _productList;
 
@@ -37,55 +32,14 @@ public partial class ShowProductsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSortedAscendingByCurrency = false;
 
+    [ObservableProperty]
+    private string _statusMessage = null!;
 
-    [RelayCommand]
-    private async Task LoadAllProducts()
-    {
-        StatusMessage = string.Empty;
+    [ObservableProperty]
+    private Color _statusMessageColor = Colors.Black;
+    #endregion
 
-        var result = await _productService.GetAllProductsAsync();
-
-        if (result.Success && result.Data != null)
-        {
-            ProductList.Clear();
-            foreach (var product in result.Data)
-            {
-                ProductList.Add(product);
-            }
-        }
-        else
-        {
-            StatusMessage = "Couldn't load services.";
-        }
-    }
-
-    [RelayCommand]
-    private async Task DeleteProduct(ProductModel product)
-    {
-        if (product == null)
-        {
-            StatusMessage = "Invalid product.";
-            return;
-        }
-
-        bool confirm = await Shell.Current.DisplayAlert("Confirmation", "Please confirm deletion", "Confirm", "Cancel");
-        if (confirm)
-        {
-            var result = await _productService.DeleteProductAsync(product.ProductId);
-
-            if (result.Success)
-            {
-                ProductList.Remove(product);
-                StatusMessage = "Product deleted successfully.";
-                StatusMessageColor = Colors.Black;
-            }
-            else
-            {
-                StatusMessage = "Product exists in a project and cannot be deleted.";
-                StatusMessageColor = Colors.Firebrick;
-            }
-        }
-    }
+    #region Sort products
 
     [RelayCommand]
     private void SortProductListByProductId()
@@ -166,6 +120,57 @@ public partial class ShowProductsViewModel : ObservableObject
 
         IsSortedAscendingByCurrency = !IsSortedAscendingByCurrency;
     }
+    #endregion
+    
+    [RelayCommand]
+    private async Task LoadAllProducts()
+    {
+        StatusMessage = string.Empty;
+
+        var result = await _productService.GetAllProductsAsync();
+
+        if (result.Success && result.Data != null)
+        {
+            ProductList.Clear();
+            foreach (var product in result.Data)
+            {
+                ProductList.Add(product);
+            }
+        }
+        else
+        {
+            StatusMessage = "Couldn't load services.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteProduct(ProductModel product)
+    {
+        if (product == null)
+        {
+            StatusMessage = "Invalid service.";
+            return;
+        }
+
+        bool confirm = await Shell.Current.DisplayAlert("Confirmation", "Please confirm deletion", "Confirm", "Cancel");
+        if (confirm)
+        {
+            var result = await _productService.DeleteProductAsync(product.ProductId);
+
+            if (result.Success)
+            {
+                ProductList.Remove(product);
+                StatusMessage = "Service deleted successfully.";
+                StatusMessageColor = Colors.Black;
+            }
+            else
+            {
+                StatusMessage = "Unable to delete service. Service cannot be deleted if it exists in a project.";
+                StatusMessageColor = Colors.Firebrick;
+            }
+        }
+    }
+
 
     [RelayCommand]
     private async Task NavigateToEditProduct(ProductModel product)
@@ -175,11 +180,5 @@ public partial class ShowProductsViewModel : ObservableObject
             { "ProductId", product.ProductId.ToString() }
         };
         await Shell.Current.GoToAsync("EditProductView", parameters);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToAddProduct()
-    {
-        await Shell.Current.GoToAsync("AddProductView");
     }
 }

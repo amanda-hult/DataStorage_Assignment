@@ -10,7 +10,6 @@
              Shell.NavBarIsVisible="False"
              Title="EditUserView">
 
-
     <ScrollView>
         <Grid Padding="15" BackgroundColor="White">
             <VerticalStackLayout Spacing="10">
@@ -34,7 +33,7 @@
 
                         <Label Text="Email address: " TextColor="Black"/>
                         <Border Stroke="LightGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
-                            <Entry Placeholder="{Binding UserModel.Email}" Text="{Binding UserUpdateDto.Email, Mode=TwoWay}" TextColor="#3f3f3f" PlaceholderColor="DarkGray"/>
+                            <Entry Placeholder="{Binding UserModel.Email}" Text="{Binding UserUpdateDto.Email, Mode=TwoWay}" TextTransform="Lowercase" TextColor="#3f3f3f" PlaceholderColor="DarkGray"/>
                         </Border>
 
                         <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" />

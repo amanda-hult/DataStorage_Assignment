@@ -32,16 +32,15 @@
 
                         <Label Text="Email: *" TextColor="Black" Padding="0, 10, 0, 0"/>
                         <Border Stroke="DarkGrey" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
-                            <Entry Text="{Binding UserCreateDto.Email}" Placeholder="user@domain.com" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                            <Entry Text="{Binding UserCreateDto.Email}" Placeholder="user@domain.com" TextTransform="Lowercase" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
                         </Border>
 
                         <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" FontSize="14" FontAttributes="Bold" />
-                        
+
                         <Button Text="Add User" Command="{Binding AddUserCommand}" BackgroundColor="#cecece" TextColor="White" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
         </Grid>
     </ScrollView>
-
 </ContentPage>

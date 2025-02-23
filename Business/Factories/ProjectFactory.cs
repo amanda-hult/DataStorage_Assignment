@@ -6,18 +6,6 @@ namespace Business.Factories;
 
 public static class ProjectFactory
 {
-    //public static BasicProjectModel Show(ProjectEntity entity)
-    //{
-    //    return new BasicProjectModel
-    //    {
-    //        Title = entity.Title,
-    //        StartDate = entity.StartDate,
-    //        EndDate = entity.EndDate,
-    //        Customer = entity.Customer.CustomerName,
-    //        Status = entity.Status.StatusName
-    //    };
-    //}
-
     public static ProjectUpdateDto Create(DetailedProjectModel model)
     {
         return new ProjectUpdateDto
@@ -49,7 +37,7 @@ public static class ProjectFactory
                     Phone = model.ContactPerson.Phone,
                 } : null
             },
-            ContactPersonId = model.ContactPerson.ContactPersonId,
+            ContactPersonId = model.ContactPerson!.ContactPersonId,
             ContactPerson = new ContactPersonUpdateDto
             {
                 ContactPersonId = model.ContactPerson.ContactPersonId,
@@ -60,11 +48,10 @@ public static class ProjectFactory
             },
             ProjectProducts = model.ProjectProducts.Select(pp => new ProjectProductDto
             {
-                ProductId = pp.Product.ProductId,
+                ProductId = pp.Product!.ProductId,
                 Hours = pp.Hours
             }).ToList(),
         };  
-
     }
 
     public static BasicProjectModel CreateBasicProjectModel(ProjectEntity entity)
@@ -167,7 +154,6 @@ public static class ProjectFactory
         };
     }
 
-
     public static void Update(ProjectEntity entity, ProjectUpdateDto dto)
     {
         entity.ProjectId = dto.ProjectId;
@@ -175,16 +161,6 @@ public static class ProjectFactory
         entity.Description = dto.Description;
         entity.StartDate = dto.StartDate;
         entity.EndDate = dto.EndDate;
-
-        //entity.StatusId = status.StatusId;
-        //entity.Status = status;
-
-        //entity.Customer.CustomerId = customer.CustomerId;
-        //entity.Customer = customer;
-
-        //entity.User.UserId = user.UserId;
-        //entity.User = user;
-
         entity.Customer.ContactPerson.ContactPersonId = dto.ContactPersonId;
         entity.Customer.ContactPerson.FirstName = dto.ContactPerson.FirstName;
         entity.Customer.ContactPerson.LastName = dto.ContactPerson.LastName;

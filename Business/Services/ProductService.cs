@@ -6,7 +6,6 @@ using Business.Models;
 using Business.Models.Responses;
 using Data.Entities;
 using Data.Interfaces;
-using Data.Repositories;
 
 namespace Business.Services;
 
@@ -19,7 +18,8 @@ public class ProductService(IProductRepository productRepository, IProjectReposi
     public async Task<ResultT<ProductModel>> CreateProductAsync(ProductCreateDto dto)
     {
         //check if product already exists
-        var exists = await _productRepository.AlreadyExistsAsync(p => p.ProductName == dto.ProductName && p.Currency == dto.Currency);
+        string lowerCaseName = dto.ProductName.ToLower();
+        bool exists = await _productRepository.AlreadyExistsAsync(p => p.ProductName.ToLower() == lowerCaseName && p.Currency == dto.Currency);
         if (exists)
             return ResultT<ProductModel>.Conflict("A product with the same name and currency already exists.");
 

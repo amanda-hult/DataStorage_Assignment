@@ -39,6 +39,7 @@
 
                     <Label Grid.Column="4" Text="Actions" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black" HorizontalOptions="End" />
                 </Grid>
+                
                 <CollectionView ItemsSource="{Binding ProductList}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:ProductModel">

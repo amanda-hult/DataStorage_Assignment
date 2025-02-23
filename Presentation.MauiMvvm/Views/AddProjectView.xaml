@@ -85,7 +85,7 @@
 
                                 <Label Text="Email address: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
                                 <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3">
-                                    <Entry Text="{Binding ProjectCreateDto.ContactPerson.Email}" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
+                                    <Entry Text="{Binding ProjectCreateDto.ContactPerson.Email}" TextTransform="Lowercase" TextColor="#3f3f3f" BackgroundColor="#f9f9f9"/>
                                 </Border>
 
                                 <Label Text="Phone number: *" FontAttributes="Bold" TextColor="Black" Padding="0, 10, 0, 0"/>
@@ -95,12 +95,11 @@
                             </VerticalStackLayout>
                         </Border>
 
-
                         <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" Margin="0, 20">
                             <Grid Padding="15, 15, 15, 20" RowDefinitions="auto, *" >
 
                                 <Grid ColumnDefinitions="2*, 2*, 1*" Grid.Row="0" ColumnSpacing="10">
-                                    
+
                                     <Grid Grid.Column="0" RowDefinitions="auto, *">
                                         <Label Text="Service: *" FontAttributes="Bold" TextColor="Black" Grid.Row="0" />
                                         <Border Stroke="DarkGray" StrokeThickness="0.5" StrokeShape="RoundRectangle 3" Grid.Row="1">
@@ -111,7 +110,6 @@
                                                     BackgroundColor="#f9f9f9"/>
                                         </Border>
                                     </Grid>
-
 
                                     <Grid Grid.Column="1" RowDefinitions="auto, *">
                                         <Label Text="Hours: *" FontAttributes="Bold" TextColor="Black" Grid.Row="0" />
@@ -136,18 +134,14 @@
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
                                 </VerticalStackLayout>
-                               
-                            </Grid>      
+                            </Grid>
                         </Border>
-
+                        
                         <Button Text="Create Project" Command="{Binding AddProjectCommand}" BackgroundColor="#cecece" TextColor="White" FontAttributes="Bold" Margin="0, 10, 0, 0"/>
-                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" Margin="5, 10, 0, 0" />
+                        <Label Text="{Binding StatusMessage}" TextColor="{Binding StatusMessageColor}" Margin="5, 10, 0, 0" FontAttributes="Bold" FontSize="14" />
                     </VerticalStackLayout>
-
-
                 </Border>
             </VerticalStackLayout>
         </Grid>
-
     </ScrollView>
 </ContentPage>
